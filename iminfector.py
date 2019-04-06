@@ -4,8 +4,11 @@
 
 IMINFECT
 """
-import os
+import pandas as pd
 import numpy as np
+import os
+import json
+import time
 
 #----- Algorithm
 def infl_set(ILM,candidate,size,uninfected):
@@ -13,17 +16,86 @@ def infl_set(ILM,candidate,size,uninfected):
 
 def infl_spread(ILM,candidate,size,uninfected):
     return sum(np.partition(ILM[candidate,uninfected], -size)[-size:])
+	
+def embedding_matrix(embedding_file,embed_dim):
+    """
+    Derive the matrix embeddings vector from the file
+    """
+    nodes = []
+    f = open(embedding_file,"r")
+    emb = np.zeros((embed_dim[0],embed_dim[1]), dtype=np.float)
+    i=0
+    for l in f:
+        if "[" in l:
+            combined = ""
+        if "]" in l:
+            combined = combined+" "+l.replace("\n","").replace("[","").replace("]","")
+            parts = combined.split(":")
+            nodes.append(int(parts[0]))
+            emb[i] = np.asarray([float(p.strip()) for p in parts[1].split(" ") if p!=""],dtype=np.float)
+            i+=1
+        combined = combined+" "+l.replace("\n","").replace("[","").replace("]","")
+    return nodes, emb
 
-import time
 
+"""
+Main
+"""
+embeddings_size=50
 st = time.time()    
 os.chdir("Path/To/Data")
 
 for fn in ["digg","weibo","mag_cs"]:
-    init_idx = np.load(fn+"/init_idx.npy")
-    chosen = np.load(fn+"/chosen.npy")
-    bins = list(np.load(fn+"/bins.npy"))
-    bins = [int(i) for i in bins]
+    f = open(fn+"/train_set.txt","r")
+    initiators = []
+    mi = np.inf
+    ma = 0
+    for l in f:
+        parts  = l.split(",")
+        initiators.append(parts[0])
+
+    initiators = np.unique((initiators))
+    dic_in = {initiators[i]:i for i in range(0,len(initiators))}
+    f.close()        
+    del initiators
+
+    input_size = len(dic_in)
+    del dic_in
+
+    #----------------- Target node dictionary
+    f = open(fn+"/"+fn.replace("mag_","")+"_node_dic.json","r")
+    dic_out = json.load(f)
+    target_size = len(dic_out) 
+    del dic_out	
+
+    file_Sn = fn+"/embeddings/mtl_n_source_embeddings_p.txt"
+    file_Tn = fn+"/embeddings/mtl_n_target_embeddings_p.txt"
+
+    nodes_idx, T = embedding_matrix(file_Tn, [target_size,embeddings_size])
+    init_idx, S = embedding_matrix(file_Sn, [input_size,embeddings_size])
+    
+    print("ready")
+    # Compute bins
+    perc = int(10*S.shape[0]/100)
+    norm = np.apply_along_axis(lambda x: sum(x**2),1,S)
+    chosen = np.argsort(-norm)[0:perc]
+    norm = norm[chosen]
+    bins = target_size*norm/sum(norm)
+    bins = np.rint(bins)
+    S = S[chosen] 
+    
+    ILM = np.dot(np.around(S,4),np.around(T.T,4))  
+    del nodes_idx, T, S, norm    
+    ILM = np.apply_along_axis(lambda x:x-abs(max(x)), 1, ILM) 
+    ILM = np.around(ILM,3)
+    #ILM.sort(axis=1)
+    ILM = abs(ILM)
+    #np.save(fn+"/ILM", ILM )
+    #np.savetxt(fn+"/ILM.csv", ILM.T,fmt='%.3f',delimiter=",")
+    #init_idx = np.load(fn+"/init_idx.npy")
+    #chosen = np.load(fn+"/chosen.npy")
+    #bins = list(np.load(fn+"/bins.npy"))
+    bins = [int(i) for i in list(bins)]
     ILM = np.load(fn+"/ILM.npy")
             
     if(fn=="Digg"):
@@ -31,7 +103,7 @@ for fn in ["digg","weibo","mag_cs"]:
     elif(fn=="weibo"):
         size=1000
     else:
-        size=3000
+        size=10000
     
     Q = []
     S = []   

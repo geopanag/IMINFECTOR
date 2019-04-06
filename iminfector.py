@@ -1,0 +1,91 @@
+# -*- coding: utf-8 -*-
+"""
+@author: george
+
+IMINFECT
+"""
+import os
+import numpy as np
+
+#----- Algorithm
+def infl_set(ILM,candidate,size,uninfected):
+    return np.argpartition(ILM[candidate,uninfected],-size)[-size:]
+
+def infl_spread(ILM,candidate,size,uninfected):
+    return sum(np.partition(ILM[candidate,uninfected], -size)[-size:])
+
+import time
+
+st = time.time()    
+os.chdir("Path/To/Data")
+
+for fn in ["digg","weibo","mag_cs"]:
+    init_idx = np.load(fn+"/init_idx.npy")
+    chosen = np.load(fn+"/chosen.npy")
+    bins = list(np.load(fn+"/bins.npy"))
+    bins = [int(i) for i in bins]
+    ILM = np.load(fn+"/ILM.npy")
+            
+    if(fn=="Digg"):
+        size=100
+    elif(fn=="weibo"):
+        size=1000
+    else:
+        size=3000
+    
+    Q = []
+    S = []   
+    nid = 0
+    mg = 1
+    iteration = 2
+    infed = np.zeros(ILM.shape[1])
+    total = set([i for i in range(ILM.shape[1])])
+    uninfected = list(total-set(np.where(infed)[0]))
+    
+    #----- Initialization
+    for u in range(ILM.shape[0]):
+        temp_l = []
+        #value = marginal_gain(ILM,u,seed_set_spread,no_simulations)
+        temp_l.append(u)
+        spr = infl_spread(ILM,u,bins[u],uninfected)    
+        temp_l.append(spr)
+        #tmp.write(str(u)+" " +str(spr)+"\n")
+        temp_l.append(0) #iteration
+        Q.append(temp_l)
+    # Do not sort
+   
+    ftp = open(fn+"/seeds/final_tmp_seeds.txt","w")  
+    idx = 0
+    while len(S) < size :
+        u = Q[0]
+        new_s = u[nid]
+        if (u[iteration] == len(S)):
+            influenced = infl_set(ILM,new_s,bins[new_s],uninfected)   
+            infed[influenced]  = 1         
+            uninfected = list(total-set(np.where(infed)[0]))
+            
+            #----- Store the new seed
+            ftp.write(str(init_idx[chosen[new_s]])+"\n")
+            S.append(new_s)
+            if(len(S)%50==0):
+                print(len(S))
+            #----- Delete uid
+            Q = [l for l in Q if l[0] != new_s]
+        else:
+            #------- Keep only the number of nodes influenceed to rank the candidate seed        
+            spr = infl_spread(ILM,new_s,bins[new_s],uninfected)        
+            #influenced = marginal_gain(ILM,u[nid],influenced_set.copy(),no_simulations,edge_samples)
+            u[mg] = spr
+            if(u[mg]<0):
+                print("Something is wrong")
+            u[iteration] = len(S)
+            Q = sorted(Q, key=lambda x:x[1],reverse=True)
+        
+    ftp.close()
+        
+    ft = open(fn+"/seeds/final_seeds.txt","w")   
+    for s in S:
+        ft.write(str(init_idx[chosen[s]])+" ")
+    ft.close()
+
+print(time.time()-st)

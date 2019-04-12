@@ -13,7 +13,13 @@ import tensorflow as tf
 import pickle
 import pandas as pd
 import json
-     
+  
+
+    
+"""
+Main
+"""
+
 os.chdir("Path/To/Data")
 
 #----------------- Parameters
@@ -134,11 +140,6 @@ with graph1.as_default():
    # summary_all = tf.summary.merge_all()    
  
     
-    
-"""
-Main
-"""
-
 n_epochs = 5 
 l1s = []
 losses = []  

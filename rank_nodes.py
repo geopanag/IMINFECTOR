@@ -8,9 +8,8 @@ Take the top 100 based on each feature and store it as seed set.
 import os            
 import pandas as pd
 
-os.chdir("Path/To/Data")
-
 fn ="digg"
+os.chdir("Path/To/"+fn+"Data")
 
 dat = pd.read_csv("node_features.csv")
 

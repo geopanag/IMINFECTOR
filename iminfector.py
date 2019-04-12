@@ -10,12 +10,15 @@ import os
 import json
 import time
 
-#----- Algorithm
-def infl_set(ILM,candidate,size,uninfected):
-    return np.argpartition(ILM[candidate,uninfected],-size)[-size:]
 
-def infl_spread(ILM,candidate,size,uninfected):
-    return sum(np.partition(ILM[candidate,uninfected], -size)[-size:])
+def softmax_(x):
+    return np.exp(x)/np.sum(np.exp(x))
+
+def infl_set(D,candidate,size,uninfected):
+    return np.argpartition(D[candidate,uninfected],-size)[-size:]
+
+def infl_spread(D,candidate,size,uninfected):
+    return sum(np.partition(D[candidate,uninfected], -size)[-size:])
 	
 def embedding_matrix(embedding_file,embed_dim):
     """
@@ -84,19 +87,14 @@ for fn in ["digg","weibo","mag_cs"]:
     bins = np.rint(bins)
     S = S[chosen] 
     
-    ILM = np.dot(np.around(S,4),np.around(T.T,4))  
+    D = np.dot(np.around(S,4),np.around(T.T,4))  
     del nodes_idx, T, S, norm    
-    ILM = np.apply_along_axis(lambda x:x-abs(max(x)), 1, ILM) 
-    ILM = np.around(ILM,3)
-    #ILM.sort(axis=1)
-    ILM = abs(ILM)
-    #np.save(fn+"/ILM", ILM )
-    #np.savetxt(fn+"/ILM.csv", ILM.T,fmt='%.3f',delimiter=",")
-    #init_idx = np.load(fn+"/init_idx.npy")
-    #chosen = np.load(fn+"/chosen.npy")
-    #bins = list(np.load(fn+"/bins.npy"))
+    D = np.apply_along_axis(lambda x:x-abs(max(x)), 1, D) 
+    D = np.apply_along_axis(softmax, 1, D) 
+    D = np.around(D,3)
+    D = abs(D)
     bins = [int(i) for i in list(bins)]
-    ILM = np.load(fn+"/ILM.npy")
+    D = np.load(fn+"/D.npy")
             
     if(fn=="Digg"):
         size=100
@@ -110,16 +108,15 @@ for fn in ["digg","weibo","mag_cs"]:
     nid = 0
     mg = 1
     iteration = 2
-    infed = np.zeros(ILM.shape[1])
-    total = set([i for i in range(ILM.shape[1])])
+    infed = np.zeros(D.shape[1])
+    total = set([i for i in range(D.shape[1])])
     uninfected = list(total-set(np.where(infed)[0]))
     
     #----- Initialization
-    for u in range(ILM.shape[0]):
+    for u in range(D.shape[0]):
         temp_l = []
-        #value = marginal_gain(ILM,u,seed_set_spread,no_simulations)
         temp_l.append(u)
-        spr = infl_spread(ILM,u,bins[u],uninfected)    
+        spr = infl_spread(D,u,bins[u],uninfected)    
         temp_l.append(spr)
         #tmp.write(str(u)+" " +str(spr)+"\n")
         temp_l.append(0) #iteration
@@ -132,7 +129,7 @@ for fn in ["digg","weibo","mag_cs"]:
         u = Q[0]
         new_s = u[nid]
         if (u[iteration] == len(S)):
-            influenced = infl_set(ILM,new_s,bins[new_s],uninfected)   
+            influenced = infl_set(D,new_s,bins[new_s],uninfected)   
             infed[influenced]  = 1         
             uninfected = list(total-set(np.where(infed)[0]))
             
@@ -145,8 +142,8 @@ for fn in ["digg","weibo","mag_cs"]:
             Q = [l for l in Q if l[0] != new_s]
         else:
             #------- Keep only the number of nodes influenceed to rank the candidate seed        
-            spr = infl_spread(ILM,new_s,bins[new_s],uninfected)        
-            #influenced = marginal_gain(ILM,u[nid],influenced_set.copy(),no_simulations,edge_samples)
+            spr = infl_spread(D,new_s,bins[new_s],uninfected)        
+            #influenced = marginal_gain(D,u[nid],influenced_set.copy(),no_simulations,edge_samples)
             u[mg] = spr
             if(u[mg]<0):
                 print("Something is wrong")

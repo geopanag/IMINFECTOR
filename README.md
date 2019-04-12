@@ -1,6 +1,6 @@
 # IMINFECTOR
 
-Code and instructions to reproduce the paper of Influence-Maximization-via-Representation-Learning
+Code and instructions to reproduce the analysis in Influence Maximization via Representation Learning
 
 ## Folder Structure
 Code/ The current folder <br />

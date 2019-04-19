@@ -13,6 +13,7 @@ import numpy as np
 import igraph as ig
 import time 
 import json
+
 os.chdir("Path/To/Data")
 
 start = time.time()

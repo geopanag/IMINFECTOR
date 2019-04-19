@@ -118,11 +118,10 @@ for fn in ["digg","weibo","mag_cs"]:
         temp_l.append(u)
         spr = infl_spread(D,u,bins[u],uninfected)    
         temp_l.append(spr)
-        #tmp.write(str(u)+" " +str(spr)+"\n")
-        temp_l.append(0) #iteration
+        temp_l.append(0)
         Q.append(temp_l)
+		
     # Do not sort
-   
     ftp = open(fn+"/seeds/final_tmp_seeds.txt","w")  
     idx = 0
     while len(S) < size :
@@ -140,10 +139,10 @@ for fn in ["digg","weibo","mag_cs"]:
                 print(len(S))
             #----- Delete uid
             Q = [l for l in Q if l[0] != new_s]
+			
         else:
             #------- Keep only the number of nodes influenceed to rank the candidate seed        
             spr = infl_spread(D,new_s,bins[new_s],uninfected)        
-            #influenced = marginal_gain(D,u[nid],influenced_set.copy(),no_simulations,edge_samples)
             u[mg] = spr
             if(u[mg]<0):
                 print("Something is wrong")

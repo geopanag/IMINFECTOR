@@ -22,6 +22,8 @@ class INFECTOR:
         self.n_epochs = n_epochs
         self.embedding_size = embedding_size
         self.num_samples = num_samples
+        self.file_Sn = fn+"/embeddings/infector_source.txt"
+        self.file_Tn = fn+"/embeddings/infector_target.txt"
         
      def create_dicts(self):
         """
@@ -216,9 +218,6 @@ if __name__ == '__main__':
         infector.create_dicts()
         
         infector.model()
-        
-        infector.file_Sn = fn+"/embeddings/infector_source_embeddings_p.txt"
-        infector.file_Tn = fn+"/embeddings/infector_target_embeddings_p.txt"
         
         l1s,l2s = infector.train()
 

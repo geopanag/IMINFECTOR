@@ -2,7 +2,7 @@
 """
 @author: george
 
-IMINFECT
+IMINFECTOR
 """
 import pandas as pd
 import numpy as np
@@ -10,9 +10,11 @@ import os
 import json
 import time
 
+def softmax_(x):
+        return np.exp(x)/np.sum(np.exp(x))
 
 class ΙΜINFECTOR:
-     def __init__(self, fn, embedding_size,seed_set_size):
+    def __init__(self, fn, embedding_size,seed_set_size):
         self.fn=fn
         self.embedding_size = embedding_size
         self.num_samples = num_samples
@@ -25,9 +27,6 @@ class ΙΜINFECTOR:
         else:
             self.size=10000
             
-    def softmax_(x):
-        return np.exp(x)/np.sum(np.exp(x))
-    
     def infl_set(candidate,size,uninfected):
         return np.argpartition(self.D[candidate,uninfected],-size)[-size:]
     
@@ -125,7 +124,7 @@ class ΙΜINFECTOR:
         for u in range(self.D.shape[0]):
             temp_l = []
             temp_l.append(u)
-            spr = infl_spread(self.D,u,bins[u],uninfected)    
+            spr = self.infl_spread(self.D,u,bins[u],uninfected)    
             temp_l.append(spr)
             temp_l.append(0)
             Q.append(temp_l)
@@ -137,7 +136,7 @@ class ΙΜINFECTOR:
             u = Q[0]
             new_s = u[nid]
             if (u[iteration] == len(self.S)):
-                influenced = infl_set(self.D,new_s,bins[new_s],uninfected)   
+                influenced = self.infl_set(self.D,new_s,bins[new_s],uninfected)   
                 infed[influenced]  = 1         
                 uninfected = list(total-set(np.where(infed)[0]))
                 
@@ -151,7 +150,7 @@ class ΙΜINFECTOR:
     			
             else:
                 #------- Keep only the number of nodes influenceed to rank the candidate seed        
-                spr = infl_spread(self.D,new_s,bins[new_s],uninfected)        
+                spr = self.infl_spread(self.D,new_s,bins[new_s],uninfected)        
                 u[mg] = spr
                 if(u[mg]<0):
                     print("Something is wrong")

@@ -3,8 +3,8 @@
 @author: georg
 
 Extract summary features about the participation of nodes in the cascades
-Extract node centralities from the follower network and the cascades
-Extract the train node cascades without duplicates
+Compute kcore and avg cascade length
+Etract the train set for INFECTOR
 """
 
 import os

@@ -2,7 +2,7 @@
 """
 @author: george
 
-INFECT
+INFECTOR
 """
 # -*- coding: utf-8 -*-
 import os

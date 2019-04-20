@@ -11,39 +11,46 @@ import json
 import time
 
 
-def softmax_(x):
-    return np.exp(x)/np.sum(np.exp(x))
-
-def infl_set(D,candidate,size,uninfected):
-    return np.argpartition(D[candidate,uninfected],-size)[-size:]
-
-def infl_spread(D,candidate,size,uninfected):
-    return sum(np.partition(D[candidate,uninfected], -size)[-size:])
-	
-def embedding_matrix(embedding_file,embed_dim):
-    """
-    Derive the matrix embeddings vector from the file
-    """
-    nodes = []
-    f = open(embedding_file,"r")
-    emb = np.zeros((embed_dim[0],embed_dim[1]), dtype=np.float)
-    i=0
-    for l in f:
-        if "[" in l:
-            combined = ""
-        if "]" in l:
+class ΙΜINFECTOR:
+     def __init__(self, fn , learning_rate,n_epochs,embedding_size,num_samples):
+        self.fn=fn
+        self.learning_rate = learning_rate
+        self.n_epochs = n_epochs
+        self.embedding_size = embedding_size
+        self.num_samples = num_samples
+    
+    def softmax_(x):
+        return np.exp(x)/np.sum(np.exp(x))
+    
+    def infl_set(D,candidate,size,uninfected):
+        return np.argpartition(D[candidate,uninfected],-size)[-size:]
+    
+    def infl_spread(D,candidate,size,uninfected):
+        return sum(np.partition(D[candidate,uninfected], -size)[-size:])
+    	
+    def embedding_matrix(embedding_file,embed_dim):
+        """
+        Derive the matrix embeddings vector from the file
+        """
+        nodes = []
+        f = open(embedding_file,"r")
+        emb = np.zeros((embed_dim[0],embed_dim[1]), dtype=np.float)
+        i=0
+        for l in f:
+            if "[" in l:
+                combined = ""
+            if "]" in l:
+                combined = combined+" "+l.replace("\n","").replace("[","").replace("]","")
+                parts = combined.split(":")
+                nodes.append(int(parts[0]))
+                emb[i] = np.asarray([float(p.strip()) for p in parts[1].split(" ") if p!=""],dtype=np.float)
+                i+=1
             combined = combined+" "+l.replace("\n","").replace("[","").replace("]","")
-            parts = combined.split(":")
-            nodes.append(int(parts[0]))
-            emb[i] = np.asarray([float(p.strip()) for p in parts[1].split(" ") if p!=""],dtype=np.float)
-            i+=1
-        combined = combined+" "+l.replace("\n","").replace("[","").replace("]","")
-    return nodes, emb
+        return nodes, emb
 
 
-"""
-Main
-"""
+if __name__ == '__main__':
+    os.chdir("Path/To/Data")
 embeddings_size=50
 st = time.time()    
 os.chdir("Path/To/Data")

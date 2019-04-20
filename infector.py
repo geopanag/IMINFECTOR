@@ -23,7 +23,6 @@ class INFECTOR:
         self.embedding_size = embedding_size
         self.num_samples = num_samples
         
-
      def create_dicts(self):
         """
         # Min max normalization of cascade length and source-target dictionaries
@@ -200,12 +199,8 @@ class INFECTOR:
                 return l1s,l2s
                 
                 
-"""
-Main
-"""
 if __name__ == '__main__':
-    #os.chdir("Path/To/Data")
-    os.chdir("C:/Users/georg/Desktop/research/Influence Maximization/Data")
+    os.chdir("Path/To/Data")
     
     #----------------- Parameters
     learning_rate = 0.1

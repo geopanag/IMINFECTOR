@@ -6,16 +6,11 @@ Weigh all networks based on weighted cascade, and derive the attribute file requ
 
 import pandas as pd
 import numpy as np
-import os
 import json
 import time
 
-os.chdir("Path/To/Data")
-log= open("time_log.txt","a")
-
-for fn in ["weibo","digg","mag_cs"]:
+def run(fn,log):
     start = time.time()
-    print(fn)
     #--- Read graph
     attribute = open(fn+"/wc_"+fn+"_attribute.txt","w")
     graph = pd.read_csv(fn+"/"+fn+"_network.txt",sep=" ")
@@ -61,4 +56,3 @@ for fn in ["weibo","digg","mag_cs"]:
     attribute.write("m="+str(graph.shape[0])+"\n")
     attribute.close()
 
-log.close()

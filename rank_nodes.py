@@ -1,7 +1,7 @@
 """
-r: georg
+@author: georg
 
-Take the top nodes ranked based on kcore and avg cascade length (top no=seed size for eac dataset)
+Take the top nodes ranked based on kcore and avg cascade length (top no=seed size for each dataset)
 """
 
 import os            
@@ -9,14 +9,14 @@ import pandas as pd
 
 os.chdir("Path/To/Data")
 
-for fn in ["weibo","digg","mag"]:
+def run(fn):
     dat = pd.read_csv(fn+"/node_features.csv")
     if(fn =="digg"):
-    	perc = 100
+        perc = 100
     elif(fn=="weibo"):
-    	perc = 1000
+        perc = 1000
     else:
-    	perc = 10000
+        perc = 10000
     	
     top = pd.DataFrame(columns=dat.columns)
     for col in dat.columns:

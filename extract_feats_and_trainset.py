@@ -2,12 +2,10 @@
 """
 @author: georg
 
-Extract summary features about the participation of nodes in the cascades
 Compute kcore and avg cascade length
-Etract the train set for INFECTOR
+Extract the train set for INFECTOR
 """
 
-import os
 import igraph as ig
 import time
 import pandas as pd
@@ -37,7 +35,7 @@ def remove_duplicates(cascade_nodes,cascade_times):
     return cascade_nodes, cascade_times
 
     
-def store_samples(fn,cascade_nodes,cascade_times,op_time,sampling_perc=120):
+def store_samples(fn,cascade_nodes,cascade_times,initiators,op_time,sampling_perc=120):
     """
     # Store the samples  for the train set as described in the node-context pair creation process for INFECTOR
     """
@@ -67,119 +65,110 @@ def store_samples(fn,cascade_nodes,cascade_times,op_time,sampling_perc=120):
 
 
             
-if __name__ == '__main__':
-    start = time.time()
-    os.chdir("Path/To/Data")
-    
-    sampling_perc = 120
-    log= open("time_log.txt","a")
-    
-    for fn in ["weibo","digg","mag"]:
-        print(fn)
-        print("Reading the network")
-        g = ig.Graph.Read_Ncol(fn+"/"+fn+"_network.txt")
-        # in mag it is undirected
-        if fn =="mag":
-            g.to_undirected()
-            
-        f = open(fn+"/train_cascades.txt")  
+def run(fn,sampling_perc,log):    
+    print("Reading the network")
+    g = ig.Graph.Read_Ncol(fn+"/"+fn+"_network.txt")
+    # in mag it is undirected
+    if fn =="mag":
+        g.to_undirected()
         
-        #----- Initialize features
-        idx = 0
-        deleted_nodes = []
-        g.vs["Cascades_started"] = 0
-        g.vs["Cumsize_cascades_started"] = 0
-        g.vs["Cascades_participated"] = 0
-        log.write(" net:"+fn+"\n")
-        start_t = int(f.next())
-        
-        times = []
-        idx=0
+    f = open(fn+"/train_cascades.txt")  
     
-        start = time.time()    
-        #---------------------- Iterate through cascades to crate the train set
-        for line in f:
-            if(fn=="mag"):
-                parts = line.split(";")
-                initiators = parts[0].replace(",","").split(" ")
-                op_time = int(initiators[-1])+start_t
-                initiators = initiators[:-1]
-                papers = parts[1].replace("\n","").split(":")
-                papers = sort_papers(papers)
-                papers = [list(map(lambda x: x.replace(",",""),i)) for i in list(map(lambda x:x.split(" "),papers))]
-                
-                #---- Extract the authors from the paper list
-                flatten = []
-                for i in papers:
-                    flatten = flatten+i[:-1]
-                u,i = np.unique(flatten,return_index=True)
-                cascade_nodes = list(u[np.argsort(i)])
-                
-                #--- Update metrics of initiators
-                for op_id in initiators:
-                    try:
-                        g.vs.find(name=op_id)["Cascades_started"]+=1
-                        g.vs.find(name=op_id)["Cumsize_cascades_started"]+=len(papers)
-                    except:
-                        continue
-                    
-                cascade_times = []
-                cascade_nodes = []
-                for p in papers:
-                    tim = int(p[-1])+start_t            
-                    for j in p[:-1]:
-                        if j!="" and j!=" " and j not in cascade_nodes:
-                            try:
-                                g.vs.find(name=j)["Cascades_participated"]+=1
-                            except:
-                                continue
-                            cascade_nodes.append(j)
-                            cascade_times.append(tim)
-                            
-            else:
-                cascade = line.replace("\n","").split(";")
-                cascade_nodes = map(lambda x:  x.split(" ")[0],cascade[1:])
-                if(fn=="weibo"):
-                    cascade_times = map(lambda x:  datetime.strptime(x.replace("\r","").split(" ")[1], '%Y-%m-%d-%H:%M:%S'),cascade[1:])
-                else:
-                    cascade_times = map(lambda x:  x.replace("\r","").split(" ")[1],cascade[1:])
-                
-                #---- Remove retweets by the same person in one cascade
-                cascade_nodes, cascade_times = remove_duplicates(cascade_nodes,cascade_times)
-                
-                #---------- Dictionary nodes -> cascades
-                op_id = cascade_nodes[0]
-                op_time = cascade_times[0]
+    #----- Initialize features
+    idx = 0
+    deleted_nodes = []
+    g.vs["Cascades_started"] = 0
+    g.vs["Cumsize_cascades_started"] = 0
+    g.vs["Cascades_participated"] = 0
+    log.write(" net:"+fn+"\n")
+    start_t = int(f.next())
+    idx=0
 
-                #---------- Update metrics
+    start = time.time()    
+    #---------------------- Iterate through cascades to create the train set
+    for line in f:
+        if(fn=="mag"):
+            parts = line.split(";")
+            initiators = parts[0].replace(",","").split(" ")
+            op_time = int(initiators[-1])+start_t
+            initiators = initiators[:-1]
+            papers = parts[1].replace("\n","").split(":")
+            papers = sort_papers(papers)
+            papers = [list(map(lambda x: x.replace(",",""),i)) for i in list(map(lambda x:x.split(" "),papers))]
+            
+            #---- Extract the authors from the paper list
+            flatten = []
+            for i in papers:
+                flatten = flatten+i[:-1]
+            u,i = np.unique(flatten,return_index=True)
+            cascade_nodes = list(u[np.argsort(i)])
+            
+            #--- Update metrics of initiators
+            for op_id in initiators:
                 try:
                     g.vs.find(name=op_id)["Cascades_started"]+=1
-                    g.vs.find(op_id)["Cumsize_cascades_started"]+=len(cascade_nodes)
-                except: 
-                    deleted_nodes.append(op_id)
+                    g.vs.find(name=op_id)["Cumsize_cascades_started"]+=len(papers)
+                except:
                     continue
                 
-                if(len(cascade_nodes)<2):
-                    continue
-    
-            store_samples(fn,cascade_nodes,cascade_times,op_time,sampling_perc=120)
+            cascade_times = []
+            cascade_nodes = []
+            for p in papers:
+                tim = int(p[-1])+start_t            
+                for j in p[:-1]:
+                    if j!="" and j!=" " and j not in cascade_nodes:
+                        try:
+                            g.vs.find(name=j)["Cascades_participated"]+=1
+                        except:
+                            continue
+                        cascade_nodes.append(j)
+                        cascade_times.append(tim)
                         
-            idx+=1
-            if(idx%1000==0):
-                print("-------------------",idx)
+        else:
+            initiators = []
+            cascade = line.replace("\n","").split(";")
+            cascade_nodes = map(lambda x:  x.split(" ")[0],cascade[1:])
+            if(fn=="weibo"):
+                cascade_times = map(lambda x:  datetime.strptime(x.replace("\r","").split(" ")[1], '%Y-%m-%d-%H:%M:%S'),cascade[1:])
+            else:
+                cascade_times = map(lambda x:  x.replace("\r","").split(" ")[1],cascade[1:])
             
-        print("Number of nodes not found in the graph: ",len(deleted_nodes))
-        f.close()
+            #---- Remove retweets by the same person in one cascade
+            cascade_nodes, cascade_times = remove_duplicates(cascade_nodes,cascade_times)
+            
+            #---------- Dictionary nodes -> cascades
+            op_id = cascade_nodes[0]
+            op_time = cascade_times[0]
+
+            #---------- Update metrics
+            try:
+                g.vs.find(name=op_id)["Cascades_started"]+=1
+                g.vs.find(op_id)["Cumsize_cascades_started"]+=len(cascade_nodes)
+            except: 
+                deleted_nodes.append(op_id)
+                continue
+            
+            if(len(cascade_nodes)<2):
+                continue
+
+        store_samples(fn,cascade_nodes,cascade_times,initiators,op_time,sampling_perc)
+                    
+        idx+=1
+        if(idx%1000==0):
+            print("-------------------",idx)
         
-        log.write("Training time:"+str(time.time()-start)+"\n")
-        
-        start = time.time()
-        kcores = g.shell_index()
-        log.write("K-core time:"+str(time.time()-start)+"\n")
-        
-        #------ Store node charateristics
-        pd.DataFrame({"Node":g.vs["name"],
-                      "Kcores":kcores,
-                      "Participated":g.vs["Cascades_participated"],
-        			    "Avg_Cascade_Size": g.vs["Cumsize_cascades_started"]/g.vs["Cascades_started"]}).to_csv(fn+"/node_features.csv",index=False)
+    print("Number of nodes not found in the graph: ",len(deleted_nodes))
+    f.close()
+    
+    log.write("Training time:"+str(time.time()-start)+"\n")
+    
+    start = time.time()
+    kcores = g.shell_index()
+    log.write("K-core time:"+str(time.time()-start)+"\n")
+    
+    #------ Store node charateristics
+    pd.DataFrame({"Node":g.vs["name"],
+                  "Kcores":kcores,
+                  "Participated":g.vs["Cascades_participated"],
+    			    "Avg_Cascade_Size": g.vs["Cumsize_cascades_started"]/g.vs["Cascades_started"]}).to_csv(fn+"/node_features.csv",index=False)
 

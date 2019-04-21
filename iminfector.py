@@ -158,28 +158,21 @@ class ΙΜINFECTOR:
         ftp.close()
         
         
-if __name__ == '__main__':
-    os.chdir("Path/To/Data")
-    
-    #----------------- Parameters
-    embedding_size = 50
-    
-    st = time.time()    
+        
+def run(fn,embedding_size ,log)
+    f = open(fn+"/train_set.txt","r")
+    start = time.time()
+    infector = IMINFECTOR(fn,learning_rate,n_epochs,embedding_size,num_neg_samples)
 
-    for fn in ["digg","weibo","mag_cs"]:
-        f = open(fn+"/train_set.txt","r")
-        start = time.time()
-        infector = IMINFECTOR(fn,learning_rate,n_epochs,embedding_size,num_neg_samples)
-
-        iminfector.create_dicts()
-        
-        nodes_idx, T = infector.embedding_matrix("T")#file_Tn, [target_size,embeddings_size]
-        init_idx, S = infector.embedding_matrix("S")#file_Tn, [input_size,embeddings_size]
-        
-        iminfector.compute_D(S,T,nodes_idx,init_idx)
-        del T,S,nodes_idx
-        iminfector.process_D()
-        iminfector.run_method()
-        
+    iminfector.create_dicts()
+    
+    nodes_idx, T = infector.embedding_matrix("T")
+    init_idx, S = infector.embedding_matrix("S")
+    
+    iminfector.compute_D(S,T,nodes_idx,init_idx)
+    del T,S,nodes_idx
+    iminfector.process_D()
+    iminfector.run_method()
+    
         
 

@@ -197,31 +197,21 @@ class INFECTOR:
                 ftn.close()
                 
                 return l1s,l2s
-                
-                
-if __name__ == '__main__':
-    os.chdir("Path/To/Data")
-    
-    #----------------- Parameters
-    learning_rate = 0.1
-    n_epochs = 5
-    embedding_size = 50
-    num_neg_samples = 10
-    
-    log = open("time_log.txt","a")
-    for fn in ["weibo","digg","mag"]:
-        start = time.time()
-        infector = INFECTOR(fn,learning_rate,n_epochs,embedding_size,num_neg_samples)
-        
-        infector.create_dicts()
-        
-        infector.model()
-        
-        l1s,l2s = infector.train()
 
-        log.write("\n Time taken for the "+fn+" infector:"+str(time.time()-start)+"\n")
-        log.close()
-        with open(fn+'_l1s.pickle', 'wb') as handle:
-            pickle.dump(l1s,handle)
-        with open(fn+'_l2s.pickle', 'wb') as handle:
-            pickle.dump(l2s,handle)
+                
+def run(fn,learning_rate,n_epochs,embedding_size,num_neg_samples,log):
+    start = time.time()
+    infector = INFECTOR(fn,learning_rate,n_epochs,embedding_size,num_neg_samples)
+    
+    infector.create_dicts()
+    
+    infector.model()
+    
+    l1s,l2s = infector.train()
+
+    log.write("Time taken for the "+fn+" infector:"+str(time.time()-start)+"\n")
+
+    with open(fn+'_l1s.pickle', 'wb') as handle:
+        pickle.dump(l1s,handle)
+    with open(fn+'_l2s.pickle', 'wb') as handle:
+        pickle.dump(l2s,handle)

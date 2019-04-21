@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 @author: george
-
-IMINFECTOR
 """
 import pandas as pd
 import numpy as np

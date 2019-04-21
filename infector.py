@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 @author: george
-
-INFECTOR
 """
 # -*- coding: utf-8 -*-
 import os

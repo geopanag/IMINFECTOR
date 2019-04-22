@@ -1,6 +1,6 @@
 # IMINFECTOR
 
-Code and instructions to reproduce the analysis in Influence Maximization via Representation Learning
+Code and instructions to reproduce the analysis in [Influence Maximization via Representation Learning](https://arxiv.org/abs/1904.08804)
 
 ## Folder Structure
 Code/ The current folder <br />
@@ -8,9 +8,9 @@ Data/-> subfolders Digg, Weibo, MAG each with subfolders-> Init_Data,Embeddings,
 Figures/ <br />
 
 ## Data
-Download Digg from https://www.isi.edu/~lerman/downloads/digg2009.html to Digg->Init_Data,  run digg_preprocessing.py <br />
-For weibo download from https://aminer.org/influencelocality to Weibo->Init_Data and run weibo_preprocessing.py <br />
-We received MAG from https://www.microsoft.com/en-us/research/project/microsoft-academic-graph/, but there is an open version in https://aminer.org/open-academic-graph. Add it to MAG->Init_data and run mag_preprocessing.py<br />
+Download [Digg](https://www.isi.edu/~lerman/downloads/digg2009.html) into Digg->Init_Data,  run digg_preprocessing.py <br />
+For [Weibo](https://aminer.org/influencelocality) into Weibo->Init_Data and run weibo_preprocessing.py <br />
+We used the official [MAG](https://www.microsoft.com/en-us/research/project/microsoft-academic-graph/), but there is an [open version](https://aminer.org/open-academic-graph). Add it to MAG->Init_data and run mag_preprocessing.py<br />
 
 Todo: Add MAG preprocessing <br />
 Todo: Add instructions to run IMM from https://sourceforge.net/projects/im-imm/

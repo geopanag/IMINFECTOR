@@ -7,8 +7,6 @@ Take the top nodes ranked based on kcore and avg cascade length (top no=seed siz
 import os            
 import pandas as pd
 
-os.chdir("Path/To/Data")
-
 def run(fn):
     dat = pd.read_csv(fn+"/node_features.csv")
     if(fn =="digg"):

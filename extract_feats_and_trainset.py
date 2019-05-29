@@ -72,7 +72,7 @@ def run(fn,sampling_perc,log):
     if fn =="mag":
         g.to_undirected()
         
-    f = open(fn+"/train_cascades.txt")  
+    f = open(fn+"/train_cascades.txt","r")  
     
     #----- Initialize features
     idx = 0

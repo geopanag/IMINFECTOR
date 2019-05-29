@@ -23,7 +23,6 @@ if __name__ == '__main__':
     n_epochs = 5
     embedding_size = 50
     num_neg_samples = 10
-    embedding_size = 50
     
     log= open("time_log.txt","a")
     

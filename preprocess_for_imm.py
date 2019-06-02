@@ -13,7 +13,7 @@ def run(fn,log):
     start = time.time()
     #--- Read graph
     attribute = open(fn+"/wc_"+fn+"_attribute.txt","w")
-    graph = pd.read_csv(fn+"/"+fn+"_network.txt",sep=" ")
+    graph = pd.read_csv(fn+"/"+fn+"_network.txt",sep="\t")
     if(graph.shape[1]>2):
         graph = graph.drop(graph.columns[2],1)
     graph.columns = ["node1","node2"]
@@ -37,7 +37,7 @@ def run(fn,log):
     #--- Find all nodes to create incremental ids for IMM
     all = list(set(graph["node1"].unique()).union(set(graph["node2"].unique()))) 
     
-    dic = {all[i]:i for i in range(0,len(all))}
+    dic = {int(all[i]):i for i in range(0,len(all))}
     graph['node1'] = graph['node1'].map(dic)
     graph['node2'] = graph['node2'].map(dic)
     

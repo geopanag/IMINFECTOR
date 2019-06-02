@@ -7,11 +7,14 @@ Take the top nodes ranked based on kcore and avg cascade length (top no=seed siz
 import os            
 import pandas as pd
 
+
 def run(fn):
     dat = pd.read_csv(fn+"/node_features.csv")
     if(fn =="digg"):
         perc = 100
     elif(fn=="weibo"):
+        perc = 1000
+    elif(fn=="flickr"):
         perc = 1000
     else:
         perc = 10000
@@ -25,7 +28,7 @@ def run(fn):
     top = top.drop(["Node"], axis=1)  
     
     for c in top.columns:
-        f = open("seeds/"+c.lower()+"_seeds.txt","w")
+        f = open(fn+"/seeds/"+c.lower()+"_seeds.txt","w")
         f.write(" ".join([str(x) for x in list(top.loc[0:perc,c].values)]))
         f.close()
     

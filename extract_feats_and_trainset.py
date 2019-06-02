@@ -40,9 +40,11 @@ def store_samples(fn,cascade_nodes,cascade_times,initiators,op_time,sampling_per
     # Store the samples  for the train set as described in the node-context pair creation process for INFECTOR
     """
     #---- Inverse sampling based on copying time
+    op_id = cascade_nodes[0]
     no_samples = round(len(cascade_nodes)*sampling_perc/100)
     times = [op_time/(abs((cascade_times[i]-op_time))+1) for i in range(0,len(cascade_nodes))]
     s_times = sum(times)
+    
     if s_times==0:
         samples = []	
     else:
@@ -60,14 +62,16 @@ def store_samples(fn,cascade_nodes,cascade_times,initiators,op_time,sampling_per
                 to_train_on.write(str(op_id)+","+i+","+casc_len+"\n")                	
     else:                
         for i in samples:
-            #---- Write initial node, copying node, copying time, length of cascade
-            to_train_on.write(str(op_id)+","+i+","+casc_len+"\n")
+            if(op_id!=i):
+                #---- Write initial node, copying node, copying time, length of cascade
+                to_train_on.write(str(op_id)+","+i+","+casc_len+"\n")
 
 
             
 def run(fn,sampling_perc,log):    
     print("Reading the network")
     g = ig.Graph.Read_Ncol(fn+"/"+fn+"_network.txt")
+    
     # in mag it is undirected
     if fn =="mag":
         g.to_undirected()
@@ -81,7 +85,7 @@ def run(fn,sampling_perc,log):
     g.vs["Cumsize_cascades_started"] = 0
     g.vs["Cascades_participated"] = 0
     log.write(" net:"+fn+"\n")
-    start_t = int(f.next())
+    start_t = 0 #int(next(f))
     idx=0
 
     start = time.time()    
@@ -127,14 +131,14 @@ def run(fn,sampling_perc,log):
         else:
             initiators = []
             cascade = line.replace("\n","").split(";")
-            cascade_nodes = map(lambda x:  x.split(" ")[0],cascade[1:])
+            cascade_nodes = list(map(lambda x:  x.split(" ")[0],cascade[1:]))
             if(fn=="weibo"):
-                cascade_times = map(lambda x:  datetime.strptime(x.replace("\r","").split(" ")[1], '%Y-%m-%d-%H:%M:%S'),cascade[1:])
+                cascade_times = list(map(lambda x:  datetime.strptime(x.replace("\r","").split(" ")[1], '%Y-%m-%d-%H:%M:%S'),cascade[1:]))
             else:
-                cascade_times = map(lambda x:  x.replace("\r","").split(" ")[1],cascade[1:])
+                cascade_times = list(map(lambda x:  int(x.replace("\r","").split(" ")[1]),cascade[1:]))
             
             #---- Remove retweets by the same person in one cascade
-            cascade_nodes, cascade_times = remove_duplicates(cascade_nodes,cascade_times)
+            #cascade_nodes, cascade_times = remove_duplicates(cascade_nodes,cascade_times)
             
             #---------- Dictionary nodes -> cascades
             op_id = cascade_nodes[0]
@@ -165,10 +169,12 @@ def run(fn,sampling_perc,log):
     start = time.time()
     kcores = g.shell_index()
     log.write("K-core time:"+str(time.time()-start)+"\n")
+    a = np.array(g.vs["Cumsize_cascades_started"], dtype=np.float)
+    b = np.array(g.vs["Cascades_started"], dtype=np.float)
     
     #------ Store node charateristics
     pd.DataFrame({"Node":g.vs["name"],
                   "Kcores":kcores,
                   "Participated":g.vs["Cascades_participated"],
-    			    "Avg_Cascade_Size": g.vs["Cumsize_cascades_started"]/g.vs["Cascades_started"]}).to_csv(fn+"/node_features.csv",index=False)
+    			    "Avg_Cascade_Size": a/b}).to_csv(fn+"/node_features.csv",index=False)
 

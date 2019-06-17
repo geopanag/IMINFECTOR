@@ -11,7 +11,7 @@ import time
 def softmax_(x):
         return np.exp(x)/np.sum(np.exp(x))
 
-class ΙΜINFECTOR:
+class IMINFECTOR:
     def __init__(self, fn, embedding_size,seed_set_size):
         self.fn=fn
         self.embedding_size = embedding_size
@@ -58,7 +58,7 @@ class ΙΜINFECTOR:
             combined = combined+" "+l.replace("\n","").replace("[","").replace("]","")
         return nodes, emb
         
-     def create_dicts(self):
+    def create_dicts(self):
         """
         # Min max normalization of cascade length and source-target dictionaries
         """
@@ -156,10 +156,9 @@ class ΙΜINFECTOR:
                 Q = sorted(Q, key=lambda x:x[1],reverse=True)
             
         ftp.close()
+            
         
-        
-        
-def run(fn,embedding_size ,log)
+def run(fn,embedding_size ,log):
     f = open(fn+"/train_set.txt","r")
     start = time.time()
     infector = IMINFECTOR(fn,learning_rate,n_epochs,embedding_size,num_neg_samples)

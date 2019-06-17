@@ -14,7 +14,7 @@ import json
   
 
 class INFECTOR:
-     def __init__(self, fn , learning_rate,n_epochs,embedding_size,num_samples):
+    def __init__(self, fn , learning_rate,n_epochs,embedding_size,num_samples):
         self.fn=fn
         self.learning_rate = learning_rate
         self.n_epochs = n_epochs
@@ -23,7 +23,7 @@ class INFECTOR:
         self.file_Sn = fn+"/embeddings/infector_source.txt"
         self.file_Tn = fn+"/embeddings/infector_target.txt"
         
-     def create_dicts(self):
+    def create_dicts(self):
         """
         # Min max normalization of cascade length and source-target dictionaries
         """
@@ -43,18 +43,19 @@ class INFECTOR:
         
         #----------------- Source node dictionary
         initiators = np.unique((initiators))
-        self.dic_in = {initiators[i]:i for i in range(0,len(initiators))}
-        f.close()        
-        del initiators
-        self.vocabulary_size = len(self.dic_in)
         
+        self.dic_in = {initiators[i]:i for i in range(0,len(initiators))}
+        f.close()     
+        self.vocabulary_size = len(self.dic_in)
+        print(self.vocabulary_size)
         #----------------- Target node dictionary
         f = open(self.fn+"/"+self.fn+"_incr_dic.json","r")
         self.dic_out = json.load(f)
-        self.target_size = len(self.dic_out)   
+        self.target_size = len(self.dic_out)
+        print(self.target_size) 
         
         
-     def model(self):
+    def model(self):
         """
         # The multi-task learning NN to classify influenced nodes and predict cascade length
         """
@@ -110,93 +111,89 @@ class INFECTOR:
             self.train_step1 = optimizer.minimize(self.loss1)    
             self.train_step2 = optimizer.minimize(self.loss2)    
         
-            
-        def train(self):
-            """
-            # Train the model
-            """
-            l1s = []
-            l2s = []
-            #sess = tf.InteractiveSession(graph = infector.graph)
-            with  tf.Session(graph = infector.graph) as sess:
-                sess.run(tf.initialize_all_variables()) 
+    def train(self):
+        """
+	    # Train the model
+	    """
+        l1s = []
+        l2s = []
+	    #sess = tf.InteractiveSession(graph = infector.graph)
+        with  tf.Session(graph = self.graph) as sess:
+            sess.run(tf.initialize_all_variables()) 
+            for epoch in range(self.n_epochs):
+                 #--------- Train 
+                 f = open(self.fn+"/train_set.txt","r")
+                 idx = 0
+                 init= -1
+                 inputs = []
+                 labels = []
+                 #---- Build the input batch
+                 for line in f:
+                      #---- input node, output node, copying_time, cascade_length, 10 negative samples 
+                      sample = line.replace("\r","").replace("\n","").split(",")              
+                      try:
+                           original = self.dic_in[sample[0]]
+                           label = self.dic_out[sample[1]]
+                      except:
+                          continue
+					#---- check if we are at the same cascade
+                      if(init==original or init<0):
+                          init = original
+                          inputs.append(original)
+                          labels.append(label)
+                          casc = (float(sample[2])-self.mi)/self.rang
+					#---- New cascade, train on the previous one
+                      else:
+						#---------- Run one training batch
+						#--- Train for target nodes
+                           if len(inputs)<2:
+                               inputs.append(inputs[0])
+                               labels.append(labels[0])
+                           inputs = np.asarray(inputs).reshape((len(inputs),1))
+                           labels = np.asarray(labels).reshape((len(labels),1))
+					
+						#------------------ HERE
+                           sess.run(self.train_step1, feed_dict = {"u:0": inputs, "v:0": labels, "c:0": [[0]]}) 
+						
+						#--- Train for cascade length
+                           sess.run(self.train_step2, feed_dict = {"u:0": inputs[0].reshape(1,1), "v:0": labels, "c:0": [[casc]]}) 
+                           idx+=1
+						
+                           if idx%1000 == 0:
+							#loss1.eval(feed_dict = {u: inputs, v: labels, c: [[0]]}) 
+                               l1 = sess.run(self.loss1, feed_dict = {"u:0": inputs, "v:0": labels, "c:0": [[casc]]}) 
+							#l2 = loss2.eval(feed_dict = {u: inputs[0].reshape(1,1), v: labels, c: [[casc]]}) 
+                               l2 = sess.run(self.loss2, feed_dict = {"u:0": inputs[0].reshape(1,1), "v:0": labels, "c:0": [[casc]]}) 
+							
+                               l1s.append(l1)
+                               l2s.append(l2)
+                               print('Loss 2 at step %s: %s' % (idx, l2)) 
+                               print('Loss 1 at step %s: %s' % (idx, l1))
+						   
+						#---- Arrange for the next batch
+                           inputs = []
+                           labels = []
+                           inputs.append(original)
+                           labels.append(label)
+                           casc = (float(sample[2])-self.mi)/self.rang
+                           init = original
+                 f.close()
 
-                for epoch in range(self.n_epochs):
-                    #--------- Train 
-                    f = open(self.fn+"/train_set.txt","r")
-                    idx = 0
-                    init= -1
-                    inputs = []
-                    labels = []
-                    #---- Build the input batch
-                    for line in f:
-                        #---- input node, output node, copying_time, cascade_length, 10 negative samples 
-                        sample = line.replace("\r","").replace("\n","").split(",")              
-                        try:
-                            original = self.dic_in[sample[0]]
-                            label = self.dic_out[sample[1]]
-                        except:
-                            continue
-                        #---- check if we are at the same cascade
-                        if(init==original or init<0):
-                            init = original
-                            inputs.append(original)
-                            labels.append(label)
-                            casc = (float(sample[2])-self.mi)/self.rang
-                        #---- New cascade, train on the previous one
-                        else:
-                            #---------- Run one training batch
-                            #--- Train for target nodes
-                            if len(inputs)<2:
-                                inputs.append(inputs[0])
-                                labels.append(labels[0])
-                            inputs = np.asarray(inputs).reshape((len(inputs),1))
-                            labels = np.asarray(labels).reshape((len(labels),1))
-                        
-                            #------------------ HERE
-                            sess.run(self.train_step1, feed_dict = {"u:0": inputs, "v:0": labels, "c:0": [[0]]}) 
-                            
-                            #--- Train for cascade length
-                            sess.run(self.train_step2, feed_dict = {"u:0": inputs[0].reshape(1,1), "v:0": labels, "c:0": [[casc]]}) 
-                            idx+=1
-            				
-                            if idx%1000 == 0:
-                                #loss1.eval(feed_dict = {u: inputs, v: labels, c: [[0]]}) 
-                                l1 = sess.run(self.loss1, feed_dict = {"u:0": inputs, "v:0": labels, "c:0": [[casc]]}) 
-                                #l2 = loss2.eval(feed_dict = {u: inputs[0].reshape(1,1), v: labels, c: [[casc]]}) 
-                                l2 = sess.run(self.loss2, feed_dict = {"u:0": inputs[0].reshape(1,1), "v:0": labels, "c:0": [[casc]]}) 
-                                
-                                l1s.append(l1)
-                                l2s.append(l2)
-                                print('Loss 2 at step %s: %s' % (idx, l2))
-                                print('Loss 1 at step %s: %s' % (idx, l1))
-                               
-                            #---- Arrange for the next batch
-                            inputs = []
-                            labels = []
-                            inputs.append(original)
-                            labels.append(label)
-                            casc = (float(sample[2])-self.mi)/self.rang
-                            init = original
-                            
-                    f.close()
-
-                fsn = open(self.file_Sn,"w")
-                ftn = open(self.file_Tn,"w")
-                
-                #---------- Store the source embedding of each node
-                for node in self.dic_in.keys():
-                    emb_Sn = sess.run("Sn:0",feed_dict = {"n_in:0":np.asarray([self.dic_in[node]])})
-                    fsn.write(node+":"+",".join([str(s) for s in list(emb_Sn)])+"\n")
-                fsn.close()	
-                
-                #---------- Store the target embedding of each node
-                for node in self.dic_out.keys():
-                    emb_Tn = sess.run("Tn:0",feed_dict = {"n_out:0":np.asarray([self.dic_out[node]])})
-                    ftn.write(node+":"+",".join([str(s) for s in list(emb_Tn)])+"\n")
-                ftn.close()
-                
-                return l1s,l2s
+            fsn = open(self.file_Sn,"w")
+            ftn = open(self.file_Tn,"w")
+			
+            #---------- Store the source embedding of each node
+            for node in self.dic_in.keys():
+                 emb_Sn = sess.run("Sn:0",feed_dict = {"n_in:0":np.asarray([self.dic_in[node]])})
+                 fsn.write(node+":"+",".join([str(s) for s in list(emb_Sn)])+"\n")
+            fsn.close()	
+            #---------- Store the target embedding of each node
+            for node in self.dic_out.keys():
+                emb_Tn = sess.run("Tn:0",feed_dict = {"n_out:0":np.asarray([self.dic_out[node]])})
+                ftn.write(node+":"+",".join([str(s) for s in list(emb_Tn)])+"\n")
+            ftn.close()
+			
+            return l1s,l2s
 
                 
 def run(fn,learning_rate,n_epochs,embedding_size,num_neg_samples,log):

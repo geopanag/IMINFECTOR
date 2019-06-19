@@ -53,6 +53,11 @@ class INFECTOR:
         self.dic_out = json.load(f)
         self.target_size = len(self.dic_out)
         print(self.target_size) 
+		
+		f = open(self.fn+"/"+self.fn+"_sizes.txt","w")
+		f.write(self.target_size+"\n")
+		f.write(self.input_size)
+		f.close()
         
         
     def model(self):

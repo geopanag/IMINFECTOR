@@ -15,7 +15,6 @@ class IMINFECTOR:
     def __init__(self, fn, embedding_size):
         self.fn=fn
         self.embedding_size = embedding_size
-        self.num_samples = num_samples
         self.file_Sn = fn+"/embeddings/infector_source.txt"
         self.file_Tn = fn+"/embeddings/infector_target.txt"
         if(fn=="Digg"):
@@ -58,24 +57,11 @@ class IMINFECTOR:
             combined = combined+" "+l.replace("\n","").replace("[","").replace("]","")
         return nodes, emb
         
-    def create_dicts(self):
-		f = open(self.fn+"/train_set.txt","r")
-        initiators = []
-        self.mi = np.inf
-        self.ma = 0
-        for l in f:
-            parts  = l.split(",")
-            initiators.append(parts[0])
-        initiators = np.unique((initiators))
-        dic_in = {initiators[i]:i for i in range(0,len(initiators))}
-        f.close()        
-        
-        self.input_size = len(dic_in)
-        
-        #----------------- Target node dictionary
-        f = open(self.fn+"/"+self.fn+"_incr_dic.json","r")
-        dic_out = json.load(f)
-        self.target_size = len(dic_out)   
+    def read_sizes(self):
+		f = open(self.fn+"/"+self.fn+"_sizes.txt","w")
+		self.target_size = int(next(f).strip())
+		self.input_size = int(next(f).strip())
+		f.close()
 
     def compute_D(self,S,T,nodes_idx,init_idx):
         """
@@ -161,7 +147,7 @@ def run(fn,embedding_size,log):
     start = time.time()
     infector = IMINFECTOR(fn,embedding_size)
 
-    iminfector.create_dicts()
+    iminfector.read_sizes()
     
     nodes_idx, T = infector.embedding_matrix("T")
     init_idx, S = infector.embedding_matrix("S")

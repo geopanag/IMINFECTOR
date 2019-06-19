@@ -12,7 +12,7 @@ def softmax_(x):
         return np.exp(x)/np.sum(np.exp(x))
 
 class IMINFECTOR:
-    def __init__(self, fn, embedding_size,seed_set_size):
+    def __init__(self, fn, embedding_size):
         self.fn=fn
         self.embedding_size = embedding_size
         self.num_samples = num_samples
@@ -158,10 +158,10 @@ class IMINFECTOR:
         ftp.close()
             
         
-def run(fn,embedding_size,seed_size ,log):
+def run(fn,embedding_size,log):
     f = open(fn+"/train_set.txt","r")
     start = time.time()
-    infector = IMINFECTOR(fn,embedding_size,seed_size)
+    infector = IMINFECTOR(fn,embedding_size)
 
     iminfector.create_dicts()
     

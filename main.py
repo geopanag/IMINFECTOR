@@ -31,12 +31,6 @@ if __name__ == '__main__':
         preprocess_for_imm.run(fn,log)
         rank_nodes.run(fn) 
         infector.run(fn,learning_rate,n_epochs,embedding_size,num_neg_samples,log)
-		if(fn=="digg"):
-			seed_size=100
-		elif(fn=="weibo"):
-		    seed_size= 1000
-		else:
-		    seed_size = 10000
-		iminfector.run(fn,embedding_size,seed_size,log)
+		iminfector.run(fn,embedding_size,log)
         evaluation.run(fn,log)
     log.close()

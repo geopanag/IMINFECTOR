@@ -59,9 +59,7 @@ class IMINFECTOR:
         return nodes, emb
         
     def create_dicts(self):
-        """
-        # Min max normalization of cascade length and source-target dictionaries
-        """
+		f = open(self.fn+"/train_set.txt","r")
         initiators = []
         self.mi = np.inf
         self.ma = 0

@@ -158,10 +158,10 @@ class IMINFECTOR:
         ftp.close()
             
         
-def run(fn,embedding_size ,log):
+def run(fn,embedding_size,seed_size ,log):
     f = open(fn+"/train_set.txt","r")
     start = time.time()
-    infector = IMINFECTOR(fn,learning_rate,n_epochs,embedding_size,num_neg_samples)
+    infector = IMINFECTOR(fn,embedding_size,seed_size)
 
     iminfector.create_dicts()
     

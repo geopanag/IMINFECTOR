@@ -30,7 +30,7 @@ class IMINFECTOR:
     def infl_spread(candidate,size,uninfected):
         return sum(np.partition(self.D[candidate,uninfected], -size)[-size:])
     	
-    def embedding_matrix(var):
+    def embedding_matrix(self,var):
         """
         Derive the matrix embeddings vector from the file
         """
@@ -58,10 +58,10 @@ class IMINFECTOR:
         return nodes, emb
         
     def read_sizes(self):
-		f = open(self.fn+"/"+self.fn+"_sizes.txt","w")
-		self.target_size = int(next(f).strip())
-		self.input_size = int(next(f).strip())
-		f.close()
+	f = open(self.fn+"/"+self.fn+"_sizes.txt","r")
+	self.target_size = int(next(f).strip())
+	self.input_size = int(next(f).strip())
+	f.close()
 
     def compute_D(self,S,T,nodes_idx,init_idx):
         """
@@ -149,8 +149,8 @@ def run(fn,embedding_size,log):
 
     iminfector.read_sizes()
     
-    nodes_idx, T = infector.embedding_matrix("T")
-    init_idx, S = infector.embedding_matrix("S")
+    nodes_idx, T = iminfector.embedding_matrix("T")
+    init_idx, S = iminfector.embedding_matrix("S")
     
     iminfector.compute_D(S,T,nodes_idx,init_idx)
     del T,S,nodes_idx

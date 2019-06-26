@@ -79,6 +79,8 @@ class IMINFECTOR:
         self.E = np.rint(E)
         self.E = [int(i) for i in list(self.E)]
         np.save(self.fn+"/E", self.E)
+        bins = self.target_size*norm/sum(norm)
+        self.bins = np.rint(bins)
         S = S[self.chosen] 
         
         self.D = np.dot(np.around(S,4),np.around(T.T,4))  
@@ -93,7 +95,7 @@ class IMINFECTOR:
         self.D = abs(self.D)
         np.save(self.fn+"/D",self.D)
      
-    def run_method():
+    def run_method(self):
         """
         # IMINFECTOR algorithm
         """
@@ -110,7 +112,7 @@ class IMINFECTOR:
         for u in range(self.D.shape[0]):
             temp_l = []
             temp_l.append(u)
-            spr = self.infl_spread(self.D,u,bins[u],uninfected)    
+            spr = self.infl_spread(self.D,u,self.bins[u],uninfected)    
             temp_l.append(spr)
             temp_l.append(0)
             Q.append(temp_l)
@@ -122,7 +124,7 @@ class IMINFECTOR:
             u = Q[0]
             new_s = u[nid]
             if (u[iteration] == len(self.S)):
-                influenced = self.infl_set(self.D,new_s,bins[new_s],uninfected)   
+                influenced = self.infl_set(self.D,new_s,self.bins[new_s],uninfected)   
                 infed[influenced]  = 1         
                 uninfected = list(total-set(np.where(infed)[0]))
                 
@@ -136,7 +138,7 @@ class IMINFECTOR:
     			
             else:
                 #------- Keep only the number of nodes influenceed to rank the candidate seed        
-                spr = self.infl_spread(self.D,new_s,bins[new_s],uninfected)        
+                spr = self.infl_spread(self.D,new_s,self.bins[new_s],uninfected)        
                 u[mg] = spr
                 if(u[mg]<0):
                     print("Something is wrong")

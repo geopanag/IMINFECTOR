@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 @author: george
 """
@@ -8,21 +7,24 @@ import os
 import json
 import time
 
-def softmax_(x):
+def softmax(x):
         return np.exp(x)/np.sum(np.exp(x))
 
 class IMINFECTOR:
     def __init__(self, fn, embedding_size):
-        self.fn=fn
+        self.fn = fn
         self.embedding_size = embedding_size
         self.file_Sn = fn+"/embeddings/infector_source.txt"
         self.file_Tn = fn+"/embeddings/infector_target.txt"
-        if(fn=="Digg"):
+        if(fn=="digg"):
             self.size=100
+            self.P = 40
         elif(fn=="weibo"):
             self.size=1000
+            self.P = 10
         else:
             self.size=10000
+            self.P = 1
             
     def infl_set(candidate,size,uninfected):
         return np.argpartition(self.D[candidate,uninfected],-size)[-size:]
@@ -58,24 +60,26 @@ class IMINFECTOR:
         return nodes, emb
         
     def read_sizes(self):
-	f = open(self.fn+"/"+self.fn+"_sizes.txt","r")
-	self.target_size = int(next(f).strip())
-	self.input_size = int(next(f).strip())
-	f.close()
+		f = open(self.fn+"/"+self.fn+"_sizes.txt","r")
+		self.target_size = int(next(f).strip())
+		self.input_size = int(next(f).strip())
+		f.close()
 
     def compute_D(self,S,T,nodes_idx,init_idx):
         """
         # Derive matrix D and vector E
         """
-        perc = int(10*S.shape[0]/100)
+        print(S.shape[0])
+        
+        perc = int(self.P*S.shape[0]/100)
         norm = np.apply_along_axis(lambda x: sum(x**2),1,S)
         self.chosen = np.argsort(-norm)[0:perc]
-        norm = norm[chosen]
+        norm = norm[self.chosen]
         E = self.target_size*norm/sum(norm)
         self.E = np.rint(E)
         self.E = [int(i) for i in list(self.E)]
-        np.save(fn+"/E", self.E)
-        S = S[chosen] 
+        np.save(self.fn+"/E", self.E)
+        S = S[self.chosen] 
         
         self.D = np.dot(np.around(S,4),np.around(T.T,4))  
     
@@ -87,7 +91,7 @@ class IMINFECTOR:
         self.D = np.apply_along_axis(softmax, 1, self.D) 
         self.D = np.around(self.D,3)
         self.D = abs(self.D)
-        np.save(fn+"/D")
+        np.save(self.fn+"/D",self.D)
      
     def run_method():
         """
@@ -145,7 +149,7 @@ class IMINFECTOR:
 def run(fn,embedding_size,log):
     f = open(fn+"/train_set.txt","r")
     start = time.time()
-    infector = IMINFECTOR(fn,embedding_size)
+    iminfector = IMINFECTOR(fn,embedding_size)
 
     iminfector.read_sizes()
     
@@ -158,4 +162,3 @@ def run(fn,embedding_size,log):
     iminfector.run_method()
     
         
-

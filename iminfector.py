@@ -70,17 +70,13 @@ class IMINFECTOR:
         # Derive matrix D and vector E
         """
         print(S.shape[0])
-        
         perc = int(self.P*S.shape[0]/100)
         norm = np.apply_along_axis(lambda x: sum(x**2),1,S)
         self.chosen = np.argsort(-norm)[0:perc]
         norm = norm[self.chosen]
-        E = self.target_size*norm/sum(norm)
-        self.E = np.rint(E)
-        self.E = [int(i) for i in list(self.E)]
-        np.save(self.fn+"/E", self.E)
-        bins = self.target_size*norm/sum(norm)
-        self.bins = np.rint(bins)
+        bins = (self.target_size)*norm/sum(norm)
+        self.bins = [int(i) for i in np.rint(bins)]
+        np.save(self.fn+"/E", self.bins)
         S = S[self.chosen] 
         
         self.D = np.dot(np.around(S,4),np.around(T.T,4))  

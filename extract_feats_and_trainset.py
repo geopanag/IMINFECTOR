@@ -34,26 +34,26 @@ def remove_duplicates(cascade_nodes,cascade_times):
 
     return cascade_nodes, cascade_times
 
-    
-def store_samples(fn,cascade_nodes,cascade_times,initiators,op_time,sampling_perc=120):
+     
+def store_samples(fn,cascade_nodes,cascade_times,initiators,op_time,to_train_on,sampling_perc=120):
     """
     # Store the samples  for the train set as described in the node-context pair creation process for INFECTOR
     """
     #---- Inverse sampling based on copying time
     op_id = cascade_nodes[0]
-    no_samples = round(len(cascade_nodes)*sampling_perc/100)
-    times = [op_time/(abs((cascade_times[i]-op_time))+1) for i in range(0,len(cascade_nodes))]
+    no_samples = round(len(cascade_nodes[len(initiators):])*sampling_perc/100)
+    times = [op_time/(abs((cascade_times[i]-op_time))+1) for i in range(len(initiators),len(cascade_nodes))]
     s_times = sum(times)
     
     if s_times==0:
         samples = []	
     else:
         probs = [float(i)/s_times for i in times]
-        samples = np.random.choice(a=cascade_nodes, size=int(no_samples), p=probs) 
+        samples = np.random.choice(a=cascade_nodes[len(initiators):], size=int(no_samples), p=probs) 
     
     casc_len = str(len(cascade_nodes))
     
-    to_train_on = open(fn+"/train_set.txt","w")
+    #to_train_on = open(fn+"/train_set.txt","w")
     #----- Store train set
     if(fn=="mag"):
         for op_id in initiators:    
@@ -65,6 +65,7 @@ def store_samples(fn,cascade_nodes,cascade_times,initiators,op_time,sampling_per
             if(op_id!=i):
                 #---- Write initial node, copying node, copying time, length of cascade
                 to_train_on.write(str(op_id)+","+i+","+casc_len+"\n")
+
 
 
             
@@ -101,11 +102,11 @@ def run(fn,sampling_perc,log):
             papers = [list(map(lambda x: x.replace(",",""),i)) for i in list(map(lambda x:x.split(" "),papers))]
             
             #---- Extract the authors from the paper list
-            flatten = []
-            for i in papers:
-                flatten = flatten+i[:-1]
-            u,i = np.unique(flatten,return_index=True)
-            cascade_nodes = list(u[np.argsort(i)])
+            #flatten = []
+            #for i in papers:
+            #    flatten = flatten+i[:-1]
+            #u,i = np.unique(flatten,return_index=True)
+            #cascade_nodes = list(u[np.argsort(i)])
             
             #--- Update metrics of initiators
             for op_id in initiators:
@@ -127,13 +128,12 @@ def run(fn,sampling_perc,log):
                             continue
                         cascade_nodes.append(j)
                         cascade_times.append(tim)
-                        
+                            
         else:
-            initiators = []
             cascade = line.replace("\n","").split(";")
             cascade_nodes = list(map(lambda x:  x.split(" ")[0],cascade[1:]))
             if(fn=="weibo"):
-                cascade_times = list(map(lambda x:  datetime.strptime(x.replace("\r","").split(" ")[1], '%Y-%m-%d-%H:%M:%S'),cascade[1:]))
+                cascade_times = list(map(lambda x:  int(( (datetime.strptime(x.replace("\r","").split(" ")[1], '%Y-%m-%d-%H:%M:%S')-datetime.strptime("2011-10-28", "%Y-%m-%d")).total_seconds())),cascade[1:]))
             else:
                 cascade_times = list(map(lambda x:  int(x.replace("\r","").split(" ")[1]),cascade[1:]))
             
@@ -154,9 +154,9 @@ def run(fn,sampling_perc,log):
             
             if(len(cascade_nodes)<2):
                 continue
-
-        store_samples(fn,cascade_nodes,cascade_times,initiators,op_time,sampling_perc)
-                    
+            initiators = []
+            
+        store_samples(fn,cascade_nodes,cascade_times,initiators,op_time,our_set)         
         idx+=1
         if(idx%1000==0):
             print("-------------------",idx)

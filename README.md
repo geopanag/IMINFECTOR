@@ -12,5 +12,3 @@ Download [Digg](https://www.isi.edu/~lerman/downloads/digg2009.html) into Digg->
 For [Weibo](https://aminer.org/influencelocality) into Weibo->Init_Data and run weibo_preprocessing.py <br />
 We used the official [MAG](https://www.microsoft.com/en-us/research/project/microsoft-academic-graph/), but there is an [open version](https://aminer.org/open-academic-graph). Add it to MAG->Init_data and run mag_preprocessing.py<br />
 
-Todo: Add MAG preprocessing <br />
-Todo: Add instructions to run IMM from https://sourceforge.net/projects/im-imm/

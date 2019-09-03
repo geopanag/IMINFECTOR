@@ -1,4 +1,4 @@
-# IMINFECTOR
+
 
 Code and instructions to reproduce the analysis in [Influence Maximization via Representation Learning](https://arxiv.org/abs/1904.08804)
 

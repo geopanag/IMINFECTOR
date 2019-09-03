@@ -164,7 +164,7 @@ def run(fn,sampling_perc,log):
     print("Number of nodes not found in the graph: ",len(deleted_nodes))
     f.close()
     
-    log.write("Training time:"+str(time.time()-start)+"\n")
+    log.write("Extracting time:"+str(time.time()-start)+"\n")
     
     start = time.time()
     kcores = g.shell_index()

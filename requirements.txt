@@ -1,0 +1,7 @@
+networkx
+pandas
+numpy
+json
+tensorflow-gpu
+igraph
+pickle

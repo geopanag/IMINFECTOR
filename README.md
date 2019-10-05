@@ -3,9 +3,7 @@
 Code and instructions to reproduce the analysis in the [paper](https://arxiv.org/abs/1904.08804)
 
 ``` bash
-mkdir Code
-mkdir Data
-mkdir Figures
+mkdir Code Data Figures
 cd Code
 git clone https://github.com/GiorgosPanagopoulos/Influence-Maximization-via-Representation-Learning
 cd Code

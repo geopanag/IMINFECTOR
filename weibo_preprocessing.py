@@ -7,6 +7,8 @@ Data from https://aminer.org/influencelocality
 
 import os
 import time
+import tarfile
+from urllib.request import urlretrieve
 
 
 def split_train_and_test(cascades_file):
@@ -72,21 +74,13 @@ def split_train_and_test(cascades_file):
 
 
 def download():
-	zipresp = urlopen("https://www.dropbox.com/s/r0kdgeh8eggqgd3/retweetWithoutContent.rar")
-    tempzip = open("total.rar", "wb")
-	tempzip.write(zipresp.read())
-	tempzip.close()
-	zf = ZipFile("total.rar")    
-	zf.extractall()
-	zf.close()
+	file_tmp = urlretreive("https://www.dropbox.com/s/r0kdgeh8eggqgd3/retweetWithoutContent.rar", filename=None)[0]
+	tar = tarfile.open(fileobj=file_tmp)
+	tar.extractall("total.csv")
 	
-	zipresp = urlopen("https://www.dropbox.com/s/dyxyyws3h76mg2w/graph_170w_1month.rar")
-    tempzip = open("graph_170w_1month.rar", "wb")
-	tempzip.write(zipresp.read())
-	tempzip.close()
-	zf = ZipFile("graph_170w_1month.rar")    
-	zf.extractall()
-	zf.close()
+	file_tmp = urlretreive("https://www.dropbox.com/s/r0kdgeh8eggqgd3/graph_170w_1month.rar", filename=None)[0]
+	tar = tarfile.open(fileobj=file_tmp)
+	tar.extractall("graph_170w_1month.txt")
 
 
 def weibo_preprocessing(path):
@@ -116,7 +110,7 @@ def weibo_preprocessing(path):
     #------ Keep the subnetwork of the active users
     g = open("active_network.txt","w")
     
-    f = open("Init_Datagraph_170w_1month.txt","r")
+    f = open("graph_170w_1month.txt","r")
     
     found =  0
     idx=0

@@ -3,3 +3,5 @@ pandas==0.24.2
 numpy==1.16.4
 tensorflow-gpu==1.14
 igraph==0.7.1
+pyunpack==0.1.2
+patool==1.12

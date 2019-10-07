@@ -83,6 +83,7 @@ def download():
 
 	#http://www.isi.edu/~lerman/downloads/digg_friends.zip
 
+
 def digg_preprocessing(path):
 	os.chdir(path)
 	download()

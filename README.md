@@ -1,12 +1,10 @@
 # Influence Maximization via Representation Learning
-
 Code and instructions to reproduce the analysis in the [paper](https://arxiv.org/abs/1904.08804)
 
 ``` bash
 mkdir Code Data Figures
 cd Code
 git clone https://github.com/GiorgosPanagopoulos/Influence-Maximization-via-Representation-Learning
-cd Code
 pip install -r requirements.txt
 ```
 
@@ -25,7 +23,7 @@ Add these datasets to "MAG/Init_data" and run mag_preprocessing.py<br />
 
 
 ## Run
-Run with default parameters for sampling percentage, learning rate, number of epochs, embeddings size and number of negative samples.
+Run with default parameters for *sampling percentage*, *learning rate*, *number of epochs*, *embeddings size* and *number of negative samples*.
 
 ``` bash
 python main 120 0.1 5 50 10

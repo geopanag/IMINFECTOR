@@ -10,6 +10,8 @@ import os
 import pandas as pd
 import networkx as nx
 import numpy as np
+from urllib.request import urlopen
+from zipfile import ZipFile
 
 
 def extract_network(file):
@@ -79,16 +81,28 @@ def extract_cascades(file):
 
 
 def download():
-	#http://www.isi.edu/~lerman/downloads/digg_votes.zip
-
-	#http://www.isi.edu/~lerman/downloads/digg_friends.zip
+	zipresp = urlopen("http://www.isi.edu/~lerman/downloads/digg_votes.zip")
+    tempzip = open("digg_votes.zip", "wb")
+	tempzip.write(zipresp.read())
+	tempzip.close()
+	zf = ZipFile("digg_votes.zip")    
+	zf.extractall()
+	zf.close()
+	
+	zipresp = urlopen("http://www.isi.edu/~lerman/downloads/digg_friends.zip")
+    tempzip = open("digg_friends.zip", "wb")
+	tempzip.write(zipresp.read())
+	tempzip.close()
+	zf = ZipFile("digg_friends.zip")    
+	zf.extractall()
+	zf.close()
 
 
 def digg_preprocessing(path):
 	os.chdir(path)
 	download()
 	file_friends = "digg_friends.csv"
-	file_casc = "digg_votes.csv"
+	file_casc = "digg_votes1.csv"
 	
 	digg_extract_network(file_friends)
 	digg_extract_cascades(file_casc)

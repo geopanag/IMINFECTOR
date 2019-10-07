@@ -14,7 +14,6 @@ def split_train_and_test(cascades_file):
     # Keeps the ids of the users that are actively retweeting
     # Train time:(2011.10.29 -2012.9.28) and test time (2012.9.28 -2012.10.29)
     """
-    
     f = open(cascades_file)
     ids = set()
     train_cascades = []
@@ -73,8 +72,21 @@ def split_train_and_test(cascades_file):
 
 
 def download():
-#https://www.dropbox.com/s/r0kdgeh8eggqgd3/retweetWithoutContent.rar
-#https://www.dropbox.com/s/dyxyyws3h76mg2w/graph_170w_1month.rar
+	zipresp = urlopen("https://www.dropbox.com/s/r0kdgeh8eggqgd3/retweetWithoutContent.rar")
+    tempzip = open("total.rar", "wb")
+	tempzip.write(zipresp.read())
+	tempzip.close()
+	zf = ZipFile("total.rar")    
+	zf.extractall()
+	zf.close()
+	
+	zipresp = urlopen("https://www.dropbox.com/s/dyxyyws3h76mg2w/graph_170w_1month.rar")
+    tempzip = open("graph_170w_1month.rar", "wb")
+	tempzip.write(zipresp.read())
+	tempzip.close()
+	zf = ZipFile("graph_170w_1month.rar")    
+	zf.extractall()
+	zf.close()
 
 
 def weibo_preprocessing(path):
@@ -87,24 +99,24 @@ def weibo_preprocessing(path):
     print("Size of train:",len(train_cascades))
     print("Size of test:",len(test_cascades))
     
-    with open("\\train_cascades.txt","w") as f:
+    with open("train_cascades.txt","w") as f:
         for cascade in train_cascades:
             f.write(cascade+"\n")
     
-    with open("\\test_cascades.txt","w") as f:
+    with open("test_cascades.txt","w") as f:
         for cascade in test_cascades:
             f.write(cascade+"\n")
 
     #------ Store the active ids
-    f = open("\\active_users.txt","w")
+    f = open("active_users.txt","w")
     for uid in ids:
         f.write(uid+"\n")
     f.close()
 
     #------ Keep the subnetwork of the active users
-    g = open("\\active_network.txt","w")
+    g = open("active_network.txt","w")
     
-    f = open("Init_Data\\graph_170w_1month.txt","r")
+    f = open("Init_Datagraph_170w_1month.txt","r")
     
     found =  0
     idx=0

@@ -1,7 +1,5 @@
-networkx
-pandas
-numpy
-json
-tensorflow-gpu
-igraph
-pickle
+networkx==2.3
+pandas==0.24.2
+numpy==1.16.4
+tensorflow-gpu==1.14
+igraph==0.7.1

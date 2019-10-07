@@ -10,17 +10,26 @@ cd Code
 pip install -r requirements.txt
 ```
 
-
-
 ## Data
-Data/-> subfolders Digg, Weibo, MAG each with subfolders-> Init_Data,Embeddings, Seeds,Spreading<br />
+The data needs certain preprocessing for all datasets. 
 
-Download [Digg](https://www.isi.edu/~lerman/downloads/digg2009.html) 
-into Digg->Init_Data, run digg_preprocessing.py <br />
+``` bash
+python preprocessing
+```
+The script creates the required folder structure for every dataset (Digg, Weibo, MAG)->Init_Data,Embeddings, Seeds,Spreading<br />
+It downloads the [Digg](https://www.isi.edu/~lerman/downloads/digg2009.html) and 
+[Weibo](https://aminer.org/influencelocality) dataset, and preprocesss them for curation and derivation of the network and the train and test cascades.<br />
+To derive the MAG network and diffusion cascades, we employed the tables Paper, Paper References, Author, PaperAuthorAffiliation, Fields of Study, Paper Fields of Study from the official [MAG](https://www.microsoft.com/en-us/research/project/microsoft-academic-graph/) 
+There is also an [open version](https://aminer.org/open-academic-graph). 
+Add these datasets to "MAG/Init_data" and run mag_preprocessing.py<br />
 
-For [Weibo](https://aminer.org/influencelocality) 
-into Weibo->Init_Data and run weibo_preprocessing.py <br />
 
-We used the official [MAG](https://www.microsoft.com/en-us/research/project/microsoft-academic-graph/), but there is an [open version](https://aminer.org/open-academic-graph). 
-Add it to MAG->Init_data and run mag_preprocessing.py<br />
+## Run
+Run with default parameters for sampling percentage, learning rate, number of epochs, embeddings size and number of negative samples.
 
+``` bash
+python main 120 0.1 5 50 10
+```
+
+## Plots
+Manually change the three paths to the directories of the datasets in plot_precision.R and plot_spreading.R and run them.

@@ -3,7 +3,6 @@
 @author: georg
 
 Data from https://aminer.org/influencelocality 
-Extract network and diffusion cascades from Digg
 """
 
 import os
@@ -73,14 +72,14 @@ def split_train_and_test(cascades_file):
     return train_cascades, test_cascades, ids 
 
 
+def download():
+#https://www.dropbox.com/s/r0kdgeh8eggqgd3/retweetWithoutContent.rar
+#https://www.dropbox.com/s/dyxyyws3h76mg2w/graph_170w_1month.rar
 
 
-"""
-Main
-"""
-if __name__ == '__main__':
-    os.chdir("Path/To/Init_data")
-
+def weibo_preprocessing(path):
+    os.chdir(path)
+	download()
     #------ Split the original retweet cascades
     train_cascades, test_cascades, ids  = split_train_and_test("total.txt")
     

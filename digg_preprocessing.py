@@ -77,14 +77,18 @@ def extract_cascades(file):
     f_train.close()
     f_test.close()
 
-    
-if __name__ == '__main__':
-    os.chdir("Path/To/Init_Data") 
-    file_friends = "digg_friends.csv"
-    file_casc = "digg_votes1.csv"
-    
-    extract_network(file_friends)
-    extract_cascades(file_casc)
-    
 
+def download():
+	#http://www.isi.edu/~lerman/downloads/digg_votes.zip
+
+	#http://www.isi.edu/~lerman/downloads/digg_friends.zip
+
+def digg_preprocessing(path):
+	os.chdir(path)
+	download()
+	file_friends = "digg_friends.csv"
+	file_casc = "digg_votes.csv"
+	
+	digg_extract_network(file_friends)
+	digg_extract_cascades(file_casc)
 

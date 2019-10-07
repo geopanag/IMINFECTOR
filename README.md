@@ -15,8 +15,8 @@ The data needs certain preprocessing for all datasets.
 python preprocessing
 ```
 The script creates the required folder structure for every dataset (Digg, Weibo, MAG)->Init_Data,Embeddings, Seeds,Spreading<br />
-It downloads the [Digg](https://www.isi.edu/~lerman/downloads/digg2009.html) and 
-[Weibo](https://aminer.org/influencelocality) dataset, and preprocesss them for curation and derivation of the network and the train and test cascades.<br />
+It then downloads the [Digg](https://www.isi.edu/~lerman/downloads/digg2009.html) and 
+[Weibo](https://aminer.org/influencelocality) datasets, and preprocesss them for curation and derivation of the network and the diffusion cascades.<br />
 To derive the MAG network and diffusion cascades, we employed the tables Paper, Paper References, Author, PaperAuthorAffiliation, Fields of Study, Paper Fields of Study from the official [MAG](https://www.microsoft.com/en-us/research/project/microsoft-academic-graph/) 
 There is also an [open version](https://aminer.org/open-academic-graph). 
 Add these datasets to "MAG/Init_data" and run mag_preprocessing.py<br />

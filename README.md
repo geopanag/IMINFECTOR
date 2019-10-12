@@ -26,7 +26,7 @@ Add these datasets to "MAG/Init_data" and run mag_preprocessing.py<br />
 Run with default parameters for *sampling percentage*, *learning rate*, *number of epochs*, *embeddings size* and *number of negative samples*.
 
 ``` bash
-python main 120 0.1 5 50 10
+python main --sampling_perc=120 learning_rate=0.1 --n_epochs=5 --embedding_size=50 --num_neg_samples=10
 ```
 
 ## Plots

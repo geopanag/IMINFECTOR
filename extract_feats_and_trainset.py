@@ -72,11 +72,10 @@ def store_samples(fn,cascade_nodes,cascade_times,initiators,op_time,to_train_on,
 def run(fn,sampling_perc,log):    
     print("Reading the network")
     g = ig.Graph.Read_Ncol(fn+"/"+fn+"_network.txt")
-    
+    to_train_on = open(fn+"/train_set.txt","w")
     # in mag it is undirected
     if fn =="mag":
         g.to_undirected()
-        
     f = open(fn+"/train_cascades.txt","r")  
     
     #----- Initialize features
@@ -156,14 +155,14 @@ def run(fn,sampling_perc,log):
                 continue
             initiators = []
             
-        store_samples(fn,cascade_nodes,cascade_times,initiators,op_time,our_set)         
+        store_samples(fn,cascade_nodes,cascade_times,initiators,op_time,to_train_on)         
         idx+=1
         if(idx%1000==0):
             print("-------------------",idx)
         
     print("Number of nodes not found in the graph: ",len(deleted_nodes))
     f.close()
-    
+    to_train_on.close()
     log.write("Extracting time:"+str(time.time()-start)+"\n")
     
     start = time.time()

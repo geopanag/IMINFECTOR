@@ -8,7 +8,7 @@ git clone https://github.com/GiorgosPanagopoulos/Influence-Maximization-via-Repr
 ```
 
 ## Infector
-![infector architecture](https://github.com/GiorgosPanagopoulos/Influence-Maximization-via-Representation-Learning/figures/infector_scheme.pdf)
+![infector architecture](https://github.com/GiorgosPanagopoulos/Influence-Maximization-via-Representation-Learning/figures/infector_scheme.png)
 
 
 ## Requirements
@@ -20,6 +20,7 @@ To run this code you will need the following python packages:
 * [igraph](https://igraph.org/python/)
 * [pyunpack](https://pypi.org/project/pyunpack/)
 * [patool](https://pypi.org/project/patool/)
+
 which can be installed using the requirements.txt:
 
 ``` bash

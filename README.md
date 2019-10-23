@@ -1,5 +1,5 @@
 # Influence Maximization via Representation Learning
-Code and instructions to reproduce the analysis in the [paper](https://arxiv.org/abs/1904.08804)
+Code and instructions to reproduce the analysis in the [paper](https://arxiv.org/abs/1904.08804).
 
 ``` bash
 mkdir Code Data Figures
@@ -8,7 +8,7 @@ git clone https://github.com/GiorgosPanagopoulos/Influence-Maximization-via-Repr
 ```
 
 ## Infector
-![infector architecture](https://github.com/GiorgosPanagopoulos/Influence-Maximization-via-Representation-Learning/figures/infector_scheme.png) 
+![infector architecture](/figures/infector_scheme.png) 
 
 
 ## Requirements

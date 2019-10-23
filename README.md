@@ -5,11 +5,26 @@ Code and instructions to reproduce the analysis in the [paper](https://arxiv.org
 mkdir Code Data Figures
 cd Code
 git clone https://github.com/GiorgosPanagopoulos/Influence-Maximization-via-Representation-Learning
-pip install -r requirements.txt
 ```
 
 ## Infector
-![infector architecture](https://github.com/GiorgosPanagopoulos/Influence-Maximization-via-Representation-Learning/figures/infector-scheme.pdf)
+![infector architecture](https://github.com/GiorgosPanagopoulos/Influence-Maximization-via-Representation-Learning/figures/infector_scheme.pdf)
+
+
+## Requirements
+To run this code you will need the following python packages: 
+* [numpy](https://www.numpy.org/)
+* [pandas](https://pandas.pydata.org/)
+* [scipy](https://www.scipy.org/)
+* [tensorflow-gpu](https://www.tensorflow.org/)
+* [igraph](https://igraph.org/python/)
+* [pyunpack](https://pypi.org/project/pyunpack/)
+* [patool](https://pypi.org/project/patool/)
+which can be installed using the requirements.txt:
+
+``` bash
+pip install -r requirements.txt
+```
 
 ## Data
 All datasets need certain preprocessing before the experiments. 

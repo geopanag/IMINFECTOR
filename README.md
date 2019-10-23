@@ -8,8 +8,11 @@ git clone https://github.com/GiorgosPanagopoulos/Influence-Maximization-via-Repr
 pip install -r requirements.txt
 ```
 
+## Infector
+![infector architecture](https://github.com/GiorgosPanagopoulos/Influence-Maximization-via-Representation-Learning/figures/infector-scheme.pdf)
+
 ## Data
-The data needs certain preprocessing for all datasets. 
+All datasets need certain preprocessing before the experiments. 
 
 ``` bash
 python preprocessing
@@ -31,3 +34,15 @@ python main --sampling_perc=120 learning_rate=0.1 --n_epochs=5 --embedding_size=
 
 ## Plots
 Manually change the three paths to the directories of the datasets in plot_precision.R and plot_spreading.R and run them.
+
+## Reference
+If you use this work, please cite:
+```
+@article{panagopoulos2019influence,
+  title={Influence Maximization via Representation Learning},
+  author={Panagopoulos, George and Vazirgiannis, Michalis and Malliaros, Fragkiskos D},
+  journal={arXiv preprint arXiv:1904.08804},
+  year={2019}
+}
+```
+

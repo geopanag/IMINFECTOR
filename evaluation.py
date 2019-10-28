@@ -69,6 +69,6 @@ def run(fn,log):
             print("Seeds found :",len(seed_set_cascades))
             fa.write(str(len(seed_set_cascades))+"\n")
 
-            spreading_of_set[seed_set_size] = evaluate_distinct(seed_set_cascades)
+            spreading_of_set[seed_set_size] = DNI(seed_set_cascades)
         pd.DataFrame({"Feature":list(spreading_of_set.keys()), "Cascade Size":list(spreading_of_set.values())}).to_csv(seed_set_file.replace("seeds","spreading").replace("seeds/","spreading/"),index=False)
     fa.close()

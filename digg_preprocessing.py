@@ -57,8 +57,8 @@ def extract_cascades(file):
     threshold = min(start_times.tail(no_test_cascades))
     #sum(start_times<threshold )/start_times.shape[0]
     
-    f_train = open("digg_train_cascades.txt","w")
-    f_test = open("digg_test_cascades.txt","w")
+    f_train = open("train_cascades.txt","w")
+    f_test = open("test_cascades.txt","w")
 
     #--------- For each cascade
     for i in votes["post"].unique():

@@ -43,7 +43,7 @@ def run(fn,log):
             
         for seed_set_size in range(step,ma,step):     
             seeds = seed_set_all[0:seed_set_size]
-
+            print(len(seeds))
             #------- List of cascades for each seed
             seed_cascades =  {}
             for s in seeds:
@@ -51,18 +51,28 @@ def run(fn,log):
 
             #------- Fill the seed_cascades
             seed_set = set()
-            with open(fn+"/test_cascades.csv") as f:
-                start_t = int(next(f))
-                for line in f:
-                    cascade= line.split(";")
-                    op_ids = cascade[0].replace(",","").split(" ")
-                    op_ids = op_ids[:-1]
-                    #set(map(lambda x: x.split(" ")[0],cascade[2:]))
-                    cascade = set(np.unique([i for i in cascade[1].replace(",","").split(" ") if "\n" not in i and ":" not in i]))
-                    for op_id in op_ids:
-                        if op_id in seed_cascades:
-                            seed_cascades[op_id].append(cascade)
-                            seed_set.add(op_id)
+            with open(fn+"/test_cascades.txt") as f:
+                #start_t = int(next(f))
+                if(fn=="mag"):
+                  start_t = int(next(f))
+                  for line in f:
+                      cascade= line.split(";")
+                      op_ids = cascade[0].replace(",","").split(" ")
+                      op_ids = op_ids[:-1]
+                      #set(map(lambda x: x.split(" ")[0],cascade[2:]))
+                      cascade = set(np.unique([i for i in cascade[1].replace(",","").split(" ") if "\n" not in i and ":" not in i]))
+                      for op_id in op_ids:
+                          if op_id in seed_cascades:
+                              seed_cascades[op_id].append(cascade)
+                              seed_set.add(op_id)
+                else:
+                  for line in f:
+                      cascade = line.split(";")
+                      op_id = cascade[1].split(" ")[0]
+                      cascade = set(map(lambda x: x.split(" ")[0],cascade[2:]))
+                      if op_id in seed_cascades:
+                          seed_cascades[op_id].append(cascade)
+                          seed_set.add(op_id)
 
             #------- Fill the seed_cascades 
             seed_set_cascades = { seed: seed_cascades[seed] for seed in seed_set if len(seed_cascades[seed])>0 }

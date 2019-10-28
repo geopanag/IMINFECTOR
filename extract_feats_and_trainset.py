@@ -40,31 +40,29 @@ def store_samples(fn,cascade_nodes,cascade_times,initiators,op_time,to_train_on,
     # Store the samples  for the train set as described in the node-context pair creation process for INFECTOR
     """
     #---- Inverse sampling based on copying time
-    op_id = cascade_nodes[0]
-    no_samples = round(len(cascade_nodes[len(initiators):])*sampling_perc/100)
-    times = [op_time/(abs((cascade_times[i]-op_time))+1) for i in range(len(initiators),len(cascade_nodes))]
+    no_samples = round(len(cascade_nodes)*sampling_perc/100)
+    times = [1*1.0/(abs((cascade_times[i]-op_time))+1) for i in range(0,len(cascade_nodes))]
     s_times = sum(times)
-    
+
     if s_times==0:
-        samples = []	
+        samples = []
     else:
         probs = [float(i)/s_times for i in times]
-        samples = np.random.choice(a=cascade_nodes[len(initiators):], size=int(no_samples), p=probs) 
-    
+        samples = np.random.choice(a=cascade_nodes, size=int(no_samples), p=probs)
+
     casc_len = str(len(cascade_nodes))
-    
-    #to_train_on = open(fn+"/train_set.txt","w")
+
     #----- Store train set
     if(fn=="mag"):
-        for op_id in initiators:    
+        for op_id in initiators:
             for i in samples:
                 #---- Write inital node, copying node,length of cascade
-                to_train_on.write(str(op_id)+","+i+","+casc_len+"\n")                	
-    else:                
-        for i in samples:
-            if(op_id!=i):
-                #---- Write initial node, copying node, copying time, length of cascade
                 to_train_on.write(str(op_id)+","+i+","+casc_len+"\n")
+    else:
+        for i in samples:
+            #if(op_id!=i):# though this can t be 
+                #---- Write initial node, copying node, copying time, length of cascade
+            to_train_on.write(str(op_id)+","+i+","+casc_len+"\n")
 
 
 
@@ -85,7 +83,8 @@ def run(fn,sampling_perc,log):
     g.vs["Cumsize_cascades_started"] = 0
     g.vs["Cascades_participated"] = 0
     log.write(" net:"+fn+"\n")
-    start_t = 0 #int(next(f))
+    if(fn=="mag"):
+        start_t = int(next(f))
     idx=0
 
     start = time.time()    
@@ -129,15 +128,18 @@ def run(fn,sampling_perc,log):
                         cascade_times.append(tim)
                             
         else:
+            initiators = []
             cascade = line.replace("\n","").split(";")
-            cascade_nodes = list(map(lambda x:  x.split(" ")[0],cascade[1:]))
+           
             if(fn=="weibo"):
+                cascade_nodes = list(map(lambda x:  x.split(" ")[0],cascade[1:]))
                 cascade_times = list(map(lambda x:  int(( (datetime.strptime(x.replace("\r","").split(" ")[1], '%Y-%m-%d-%H:%M:%S')-datetime.strptime("2011-10-28", "%Y-%m-%d")).total_seconds())),cascade[1:]))
             else:
-                cascade_times = list(map(lambda x:  int(x.replace("\r","").split(" ")[1]),cascade[1:]))
+                cascade_nodes = list(map(lambda x:  x.split(" ")[0],cascade))
+                cascade_times = list(map(lambda x:  int(x.replace("\r","").split(" ")[1]),cascade))
             
             #---- Remove retweets by the same person in one cascade
-            #cascade_nodes, cascade_times = remove_duplicates(cascade_nodes,cascade_times)
+            cascade_nodes, cascade_times = remove_duplicates(cascade_nodes,cascade_times)
             
             #---------- Dictionary nodes -> cascades
             op_id = cascade_nodes[0]
@@ -153,9 +155,15 @@ def run(fn,sampling_perc,log):
             
             if(len(cascade_nodes)<2):
                 continue
-            initiators = []
+                
+            for i in cascade_nodes[1:]:
+                try:
+                    g.vs.find(name=i)["Cascades_participated"]+=1
+                except:
+                    continue
+            initiators = [op_id]
             
-        store_samples(fn,cascade_nodes,cascade_times,initiators,op_time,to_train_on)         
+        store_samples(fn,cascade_nodes[1:],cascade_times[1:],initiators,op_time,to_train_on)         
         idx+=1
         if(idx%1000==0):
             print("-------------------",idx)

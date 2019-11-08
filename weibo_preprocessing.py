@@ -108,7 +108,7 @@ def weibo_preprocessing(path):
     f.close()
 
     #------ Keep the subnetwork of the active users
-    g = open("active_network.txt","w")
+    g = open("weibo_network.txt","w")
     
     f = open("graph_170w_1month.txt","r")
     

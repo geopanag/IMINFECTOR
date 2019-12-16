@@ -133,7 +133,6 @@ def extract_cascades():
     times.sort()  
     start = abs(times[0])
 
-    #--- Why we have negatives??
     times=[i+start for i in times]
 
     print(start) 

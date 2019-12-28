@@ -114,7 +114,7 @@ class IMINFECTOR:
             Q.append(temp_l)
     		
         # Do not sort
-        ftp = open(fn+"/seeds/final_tmp_seeds.txt","w")  
+        ftp = open(fn+"/seeds/iminfector_seeds.txt","w")  
         idx = 0
         while len(self.S) < size :
             u = Q[0]

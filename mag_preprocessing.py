@@ -133,6 +133,7 @@ def extract_cascades():
     times.sort()  
     start = abs(times[0])
 
+    #--- Why we have negatives??
     times=[i+start for i in times]
 
     print(start) 
@@ -168,7 +169,5 @@ if __name__ == '__main__':
     prepare_fields()
     extract_network()
     extract_cascades()
-
-#------ Reduce cascades and split them
 
 

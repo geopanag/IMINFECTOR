@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-@author: george
+INFECTOR neural network
 """
 # -*- coding: utf-8 -*-
 import os
@@ -20,8 +20,8 @@ class INFECTOR:
         self.n_epochs = n_epochs
         self.embedding_size = embedding_size
         self.num_samples = num_samples
-        self.file_Sn = fn+"/embeddings/infector_source.txt"
-        self.file_Tn = fn+"/embeddings/infector_target.txt"
+        self.file_Sn = fn+"/embeddings/infector_source3.txt"
+        self.file_Tn = fn+"/embeddings/infector_target3.txt"
         
     def create_dicts(self):
         """
@@ -53,10 +53,10 @@ class INFECTOR:
         self.dic_out = json.load(f)
         self.target_size = len(self.dic_out)
         print(self.target_size) 	
-	f = open(self.fn+"/"+self.fn+"_sizes.txt","w")
-	f.write(self.target_size+"\n")
-	f.write(self.input_size)
-	f.close()
+        f = open(self.fn+"/"+self.fn+"_sizes.txt","w")
+        f.write(str(self.target_size)+"\n")
+        f.write(str(self.vocabulary_size))
+        f.close()
 
         
     def model(self):
@@ -105,10 +105,10 @@ class INFECTOR:
         
             #---- To retreive the embedding-node pairs after training
             n_in = tf.placeholder(tf.int32,shape=[1],name="n_in")
-            self.Sn = tf.nn.embedding_lookup(S,n_in)	
+            self.Sn = tf.nn.embedding_lookup(S,n_in,name="Sn")
         
             n_out = tf.placeholder(tf.int32,shape=[1],name="n_out")
-            self.Tn = tf.nn.embedding_lookup(T,n_out)
+            self.Tn = tf.nn.embedding_lookup(T,n_out,name="Tn")
             
             optimizer = tf.train.GradientDescentOptimizer(learning_rate=self.learning_rate)   
             #--- Seperate optimizations, for joint to loss1+loss2
@@ -212,7 +212,3 @@ def run(fn,learning_rate,n_epochs,embedding_size,num_neg_samples,log):
 
     log.write("Time taken for the "+fn+" infector:"+str(time.time()-start)+"\n")
 
-    with open(fn+'_l1s.pickle', 'wb') as handle:
-        pickle.dump(l1s,handle)
-    with open(fn+'_l2s.pickle', 'wb') as handle:
-        pickle.dump(l2s,handle)

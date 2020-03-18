@@ -1,5 +1,5 @@
 """
-@author: george
+IMINFECTOR algorithm
 """
 import pandas as pd
 import numpy as np
@@ -14,22 +14,22 @@ class IMINFECTOR:
     def __init__(self, fn, embedding_size):
         self.fn = fn
         self.embedding_size = embedding_size
-        self.file_Sn = fn+"/embeddings/infector_source.txt"
-        self.file_Tn = fn+"/embeddings/infector_target.txt"
+        self.file_Sn = fn+"/embeddings/infector_source3.txt"
+        self.file_Tn = fn+"/embeddings/infector_target3.txt"
         if(fn=="digg"):
-            self.size=100
+            self.size=50
             self.P = 40
         elif(fn=="weibo"):
             self.size=1000
             self.P = 10
         else:
             self.size=10000
-            self.P = 1
+            self.P = 10
             
-    def infl_set(candidate,size,uninfected):
+    def infl_set(self,candidate,size,uninfected):
         return np.argpartition(self.D[candidate,uninfected],-size)[-size:]
     
-    def infl_spread(candidate,size,uninfected):
+    def infl_spread(self,candidate,size,uninfected):
         return sum(np.partition(self.D[candidate,uninfected], -size)[-size:])
     	
     def embedding_matrix(self,var):
@@ -91,7 +91,7 @@ class IMINFECTOR:
         self.D = abs(self.D)
         np.save(self.fn+"/D",self.D)
      
-    def run_method(self):
+    def run_method(self,init_idx):
         """
         # IMINFECTOR algorithm
         """
@@ -108,24 +108,25 @@ class IMINFECTOR:
         for u in range(self.D.shape[0]):
             temp_l = []
             temp_l.append(u)
-            spr = self.infl_spread(self.D,u,self.bins[u],uninfected)    
+            spr = self.infl_spread(u,int(self.bins[u]),uninfected)    
             temp_l.append(spr)
             temp_l.append(0)
             Q.append(temp_l)
     		
         # Do not sort
-        ftp = open(fn+"/seeds/iminfector_seeds.txt","w")  
+        ftp = open(self.fn+"/seeds/final_seeds.txt","w")  
         idx = 0
-        while len(self.S) < size :
+        while len(self.S) < self.size :
             u = Q[0]
             new_s = u[nid]
             if (u[iteration] == len(self.S)):
-                influenced = self.infl_set(self.D,new_s,self.bins[new_s],uninfected)   
+                influenced = self.infl_set(new_s,int(self.bins[new_s]),uninfected)   
+                #influenced = self.infl_set(new_s,self.bins[new_s],uninfected)   
                 infed[influenced]  = 1         
                 uninfected = list(total-set(np.where(infed)[0]))
                 
                 #----- Store the new seed
-                ftp.write(str(init_idx[chosen[new_s]])+"\n")
+                ftp.write(str(init_idx[self.chosen[new_s]])+"\n")
                 self.S.append(new_s)
                 if(len(self.S)%50==0):
                     print(len(self.S))
@@ -134,7 +135,7 @@ class IMINFECTOR:
     			
             else:
                 #------- Keep only the number of nodes influenceed to rank the candidate seed        
-                spr = self.infl_spread(self.D,new_s,self.bins[new_s],uninfected)        
+                spr = self.infl_spread(new_s,int(self.bins[new_s]),uninfected)        
                 u[mg] = spr
                 if(u[mg]<0):
                     print("Something is wrong")
@@ -157,6 +158,6 @@ def run(fn,embedding_size,log):
     iminfector.compute_D(S,T,nodes_idx,init_idx)
     del T,S,nodes_idx
     iminfector.process_D()
-    iminfector.run_method()
+    iminfector.run_method(init_idx)
     
         

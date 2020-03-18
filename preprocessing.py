@@ -19,4 +19,3 @@ if __name__ == '__main__':
 	print(ans)
 	ans = digg_preprocessing(os.path.join("..","Digg","Init_Data"))
 	print(ans)
-	

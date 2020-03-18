@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-@author: georg
-"""
-
 import time
 import os
 import sys

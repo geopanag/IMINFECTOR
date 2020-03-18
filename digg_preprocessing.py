@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
 """
-@author: george
-
 Data from https://www.isi.edu/~lerman/downloads/digg2009.html 
 Extract network and diffusion cascades from Digg
 """
@@ -106,4 +103,3 @@ def digg_preprocessing(path):
 	
 	digg_extract_network(file_friends)
 	digg_extract_cascades(file_casc)
-

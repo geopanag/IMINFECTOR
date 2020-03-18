@@ -1,6 +1,4 @@
 """
-@author: georg
-
 Take the top nodes ranked based on kcore and avg cascade length (top no=seed size for each dataset)
 """
 
@@ -13,8 +11,6 @@ def run(fn):
     if(fn =="digg"):
         perc = 100
     elif(fn=="weibo"):
-        perc = 1000
-    elif(fn=="flickr"):
         perc = 1000
     else:
         perc = 10000

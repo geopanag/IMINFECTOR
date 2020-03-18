@@ -1,6 +1,4 @@
 """
-@author: georg
-
 Weigh all networks based on weighted cascade, and derive the attribute file required for IMM
 """
 
@@ -55,4 +53,3 @@ def run(fn,log):
     attribute.write("n="+str(len(all)+1)+"\n")
     attribute.write("m="+str(graph.shape[0])+"\n")
     attribute.close()
-

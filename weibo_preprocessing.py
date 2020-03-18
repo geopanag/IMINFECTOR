@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-@author: georg
-
 Data from https://aminer.org/influencelocality 
+Extract network and diffusion cascades from Weibo
 """
 
 import os
@@ -129,4 +128,5 @@ def weibo_preprocessing(path):
     g.close()
     
     f.close()
+
 

@@ -1,4 +1,4 @@
-# Influence Maximization via Representation Learning
+# Multi-task Learning for Influence Estimation and Maximization
 Code and instructions to reproduce the analysis in the [paper](https://arxiv.org/abs/1904.08804).
 
 ``` bash
@@ -42,6 +42,11 @@ Add these datasets to "MAG/Init_data" and run mag_preprocessing.py<br />
 
 
 ## Run
+The main function will derive and evaluate the seed sets of the two metrics and IMINFECTOR as well as the input for the baseline methods. <br /> 
+However, some the baselines need to be run separately from their original codes, found in these locations: <br /> 
+[Credit Distribution and Simpath](https://www.cs.ubc.ca/~goyal/code-release.php) <br /> 
+[IMM](https://sourceforge.net/p/im-imm/wiki/Home/).
+
 Run with default parameters for *sampling percentage*, *learning rate*, *number of epochs*, *embeddings size* and *number of negative samples*.
 
 ``` bash

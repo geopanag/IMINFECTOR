@@ -8,7 +8,7 @@ git clone https://github.com/GiorgosPanagopoulos/Influence-Maximization-via-Repr
 ```
 
 ## Infector
-![infector architecture](/figures/infector_scheme.png) 
+![infector architecture](/figures/INFECTOR.pdf) 
 
 
 ## Requirements

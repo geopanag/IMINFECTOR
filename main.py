@@ -11,13 +11,13 @@ import iminfector
 import evaluation
 
 
-parser=argparse.ArgumentParser()
-parser.add_argument('--sampling_perc', help='')
-parser.add_argument('--learning_rate', help='')
-parser.add_argument('--n_epochs', help='')
-parser.add_argument('--embedding_size', help='')
-parser.add_argument('--num_neg_samples', help='')
+parser = argparse.ArgumentParser()
 
+parser.add_argument('--sampling-perc', type=int, default=120,help='')
+parser.add_argument('--learning-rate', type=int, default=0.1,help='')
+parser.add_argument('--n-epochs', type=int, default=10,help='')
+parser.add_argument('--embedding-size', type=int, default=50,help='')
+parser.add_argument('--num-neg-samples', type=int, default=10,help='')
 
 
 if __name__ == '__main__':
@@ -28,30 +28,8 @@ if __name__ == '__main__':
 	args=parser.parse_args()
 	
 	#--- Parameters
-	if(len(args.sampling_perc)>0):#sys.argv[1])>0):
-		sampling_perc = int(args.sampling_perc)
-	else:
-		sampling_perc = 120	
-		
-	if(len(args.learning_rate)>0):
-		learning_rate = float(args.learning_rate)
-	else:
-		learning_rate = 0.1
-
-	if(len(args.n_epochs)>0):
-		n_epochs = int(args.n_epochs)
-	else:
-		n_epochs = 5
-
-	if(len(args.embedding_size)>0):
-		embedding_size = int(args.embedding_size)
-	else:
-		embedding_size = 50
-
-	if(len(args.num_neg_samples)>0):
-		num_neg_samples = int(args.num_neg_samples)
-	else:
-		num_neg_samples = 10
+	learning_rate = float(args.learning_rate)
+	embedding_size = int(args.embedding_size)
 
 	log= open("time_log.txt","a")
 

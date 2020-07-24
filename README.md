@@ -1,6 +1,9 @@
 # Multi-task Learning for Influence Estimation and Maximization
 Code and instructions to reproduce the analysis in the [paper](https://arxiv.org/abs/1904.08804).
 
+You can find online videos that describe [IMINFECTOR](https://www.youtube.com/watch?v=x28jgYW6I3M&t=322s) and its previous [variant](https://www.youtube.com/watch?v=LoKQUcq2KTM&list=LLpiK7loHj0_zMHjndIT_dYA&index=9&t=28s).
+
+
 ``` bash
 mkdir Code Data Figures
 cd Code
@@ -59,8 +62,18 @@ Manually change the three paths to the directories of the datasets in plot_preci
 ## Reference
 If you use this work, please cite:
 ```
+@inproceedings{panagopoulos2020influence,
+  title={Influence Maximization Using Influence and Susceptibility Embeddings},
+  author={Panagopoulos, George and Malliaros, Fragkiskos D and Vazirgianis, Michalis},
+  booktitle={Proceedings of the International AAAI Conference on Web and Social Media},
+  volume={14},
+  pages={511--521},
+  year={2020}
+}
+```
+```
 @article{panagopoulos2019influence,
-  title={Influence Maximization via Representation Learning},
+  title={Multi-task Learning for Influence Estimation and Maximization},
   author={Panagopoulos, George and Vazirgiannis, Michalis and Malliaros, Fragkiskos D},
   journal={arXiv preprint arXiv:1904.08804},
   year={2019}

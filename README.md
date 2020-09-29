@@ -11,7 +11,7 @@ git clone https://github.com/GiorgosPanagopoulos/Influence-Maximization-via-Repr
 ```
 
 ## Infector
-![infector architecture](/figures/INFECTOR.png =60x) 
+![infector architecture](/figures/INFECTOR.png =250x200) 
 
 
 ## Requirements

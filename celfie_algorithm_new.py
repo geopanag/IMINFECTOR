@@ -162,8 +162,6 @@ for fn in ["digg","weibo","mag"]:#,
     mg = 1
     iteration = 2
 
-    #tmp =open("../tmp.txt","w")
-    #----------------- Since we draw 50000 edges from each their total spread will always be the same
     spr = no_simulations*edge_samples
     for u in range(ILM.shape[0]):
         temp_l = []
@@ -175,12 +173,12 @@ for fn in ["digg","weibo","mag"]:#,
         temp_l.append(0) #iteration
         Q.append(temp_l)
 
-    #Q = sorted (Q, key=lambda x:x[1],reverse=True)
-    #nodes_emb[chosen[0]]
+    # since we assume a standard influence spread at the beginning it is not meaningful to sort        
+    #Q = sorted (Q, key=lambda x:x[1],reverse=True)  
+
     print("done first iteration")
 
     #----- Celf
-    #------------------- First computation of the marginal gain for all nodes
     seed_set_influenced = 0
     infl_spread = 0
 
@@ -198,9 +196,10 @@ for fn in ["digg","weibo","mag"]:#,
         if (u[iteration] == len(S)):
             print(nodes_emb[chosen[u[nid]]])
             t = time.time()
+            # have to recompute it to not store the whole set
             influenced_set = marginal_gain(ILM,u[nid],influenced_set[:],no_simulations,edge_samples)
             print(time.time()-t)
-            infl_spread = np.sum(influenced_set)
+            infl_spread = np.sum(influenced_set) # or u[mg]+infl_spread
 
             #----- Store the new seed
             try:
@@ -209,7 +208,7 @@ for fn in ["digg","weibo","mag"]:#,
                 S.append(u[nid])
 
                 #----- Delete uid
-                Q = [l for l in Q if l[0] != u[nid]]
+                Q = Q[1:]
             except:
                 break
         else:

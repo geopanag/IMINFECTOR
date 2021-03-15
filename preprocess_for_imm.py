@@ -26,6 +26,7 @@ def run(fn,log):
     outdegree = graph.groupby("node1").agg('count').reset_index()
     outdegree.columns = ["node1","outdegree"]
     
+    #--- An edge is a follow, hence influence is reverse, that is why we compute the outdegree instead of the indegree
     outdegree["outdegree"] = 1/outdegree["outdegree"]
     outdegree["outdegree"] = outdegree["outdegree"].apply(lambda x:float('%s' % float('%.6f' % x)))
     

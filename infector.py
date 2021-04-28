@@ -86,7 +86,7 @@ class INFECTOR:
                      labels=v,
                      inputs=Su,
                      num_sampled=self.num_samples,
-                     num_classes=self.vocabulary_size))
+                     num_classes=self.target_size ))
             
             #------------- Second task
             #---- Cascade length

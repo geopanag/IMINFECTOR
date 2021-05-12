@@ -125,7 +125,7 @@ def extract_cascades():
     f_n.close()
     
     f = open("reduced_cascades_"+fn+".csv","r")  
-    #--- Break train and test
+
     times = []
     for l in f:
         times.append(l.split(";")[0].split(" ")[-1])
@@ -133,7 +133,6 @@ def extract_cascades():
     times.sort()  
     start = abs(times[0])
 
-    #--- Why we have negatives??
     times=[i+start for i in times]
 
     print(start) 

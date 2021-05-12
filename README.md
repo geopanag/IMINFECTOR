@@ -41,12 +41,12 @@ It then downloads the [Digg](https://www.isi.edu/~lerman/downloads/digg2009.html
 [Weibo](https://aminer.org/influencelocality) datasets, and preprocesses them for curation and derivation of the network and the diffusion cascades.<br />
 To derive the MAG network and diffusion cascades, we employed the tables Paper, Paper References, Author, PaperAuthorAffiliation, Fields of Study, Paper Fields of Study from the official [MAG](https://www.microsoft.com/en-us/research/project/microsoft-academic-graph/). 
 There is also an [open version](https://aminer.org/open-academic-graph). 
-Add these datasets to "MAG/Init_data" and run mag_preprocessing.py<br />
+Add these datasets to "MAG/init_data" and run mag_preprocessing.py<br />
 
 
 ## Run
 The main function will derive and evaluate the seed sets of the two metrics and IMINFECTOR as well as the input for the baseline methods. <br /> 
-However, some the baselines need to be run separately from their original codes, found in these locations: <br /> 
+However, some of the baselines need to be run separately using their original codes, found in these locations: <br /> 
 [Credit Distribution and Simpath](https://www.cs.ubc.ca/~goyal/code-release.php) <br /> 
 [IMM](https://sourceforge.net/p/im-imm/wiki/Home/)
 
@@ -62,6 +62,15 @@ Manually change the three paths to the directories of the datasets in plot_preci
 ## Reference
 If you use this work, please cite:
 ```
+@article{panagopoulos2020multi,
+  title={Multi-task Learning for Influence Estimation and Maximization},
+  author={Panagopoulos, George and Malliaros, Fragkiskos and Vazirgiannis, Michalis},
+  journal={IEEE Transactions on Knowledge and Data Engineering},
+  year={2020},
+  publisher={IEEE}
+}
+```
+```
 @inproceedings{panagopoulos2020influence,
   title={Influence Maximization Using Influence and Susceptibility Embeddings},
   author={Panagopoulos, George and Malliaros, Fragkiskos D and Vazirgianis, Michalis},
@@ -71,12 +80,5 @@ If you use this work, please cite:
   year={2020}
 }
 ```
-```
-@article{panagopoulos2019influence,
-  title={Multi-task Learning for Influence Estimation and Maximization},
-  author={Panagopoulos, George and Vazirgiannis, Michalis and Malliaros, Fragkiskos D},
-  journal={arXiv preprint arXiv:1904.08804},
-  year={2019}
-}
-```
+
 

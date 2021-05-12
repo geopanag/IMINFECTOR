@@ -41,7 +41,7 @@ It then downloads the [Digg](https://www.isi.edu/~lerman/downloads/digg2009.html
 [Weibo](https://aminer.org/influencelocality) datasets, and preprocesses them for curation and derivation of the network and the diffusion cascades.<br />
 To derive the MAG network and diffusion cascades, we employed the tables Paper, Paper References, Author, PaperAuthorAffiliation, Fields of Study, Paper Fields of Study from the official [MAG](https://www.microsoft.com/en-us/research/project/microsoft-academic-graph/). 
 There is also an [open version](https://aminer.org/open-academic-graph). 
-Add these datasets to "MAG/init_data" and run mag_preprocessing.py<br />
+Add these datasets to "MAG/Init_data" and run mag_preprocessing.py<br />
 
 
 ## Run
